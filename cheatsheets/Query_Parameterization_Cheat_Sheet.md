@@ -1,6 +1,6 @@
 # Introduction
 
-[SQL Injection](https://www.owasp.org/index.php/SQL_Injection) is one of the most dangerous web vulnerabilities. So much so that it's the [\#1 item in the OWASP Top 10](https://www.owasp.org/index.php/Top_10_2013-A1-Injection). 
+[SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection) is one of the most dangerous web vulnerabilities. So much so that it's the [\#1 item in the OWASP Top 10](https://wiki.owasp.org/index.php/Top_10_2013-A1-Injection). 
 
 It represents a serious threat because SQL Injection allows evil attacker code to change the structure of a web application's SQL statement in a way that can steal data, modify data, or potentially facilitate command injection to the underlying OS. 
 
@@ -189,11 +189,3 @@ END
 
 - [The Bobby Tables site (inspired by the XKCD webcomic) has numerous examples in different languages of parameterized Prepared Statements and Stored Procedures](http://bobby-tables.com/)
 - OWASP [SQL Injection Prevention Cheat Sheet](SQL_Injection_Prevention_Cheat_Sheet.md)
-
-# Authors and Primary Editors
-
-Jim Manico - jim@owasp.org
-
-Dave Wichers - dave.wichers@owasp.org
-
-Neil Matatal - neil@owasp.org

@@ -19,7 +19,7 @@ To analyze the likelihood of this attack, analyze the time taken by a regular XM
 
 ## Applications Processing Malformed Data
 
-Certain XML parsers have the ability to recover malformed documents. They can be instructed to try their best to return a valid tree with all the content that they can manage to parse, regardless of the document’s noncompliance with the specifications. Since there are no predefined rules for the recovery process, the approach and results may not always be the same. Using malformed documents might lead to unexpected issues related to data integrity.
+Certain XML parsers have the ability to recover malformed documents. They can be instructed to try their best to return a valid tree with all the content that they can manage to parse, regardless of the document's noncompliance with the specifications. Since there are no predefined rules for the recovery process, the approach and results may not always be the same. Using malformed documents might lead to unexpected issues related to data integrity.
 
 The following two scenarios illustrate attack vectors a parser will analyze in recovery mode:
 
@@ -53,9 +53,9 @@ Normalization of a `CDATA` section is not a common rule among parsers. Libxml co
 </element>
 ```
 
-## Coersive Parsing
+## Coercive Parsing
 
-A coercive attack in XML involves parsing deeply nested XML documents without their corresponding ending tags. The idea is to make the victim use up —and eventually deplete— the machine’s resources and cause a denial of service on the target. Reports of a DoS attack in Firefox 3.67 included the use of 30,000 open XML elements without their corresponding ending tags. Removing the closing tags simplified the attack since it requires only half of the size of a well-formed document to accomplish the same results. The number of tags being processed eventually caused a stack overflow. A simplified version of such a document would look like this:
+A coercive attack in XML involves parsing deeply nested XML documents without their corresponding ending tags. The idea is to make the victim use up -and eventually deplete- the machine's resources and cause a denial of service on the target. Reports of a DoS attack in Firefox 3.67 included the use of 30,000 open XML elements without their corresponding ending tags. Removing the closing tags simplified the attack since it requires only half of the size of a well-formed document to accomplish the same results. The number of tags being processed eventually caused a stack overflow. A simplified version of such a document would look like this:
 
 ```xml
 <A1>
@@ -86,7 +86,7 @@ Consider a bookseller that uses a web service through a web interface to make tr
 </buy>
 ```
 
-If there is no control on the document’s structure, the application could also process different well-formed messages with unintended consequences. The previous document could have contained additional tags to affect the behavior of the underlying application processing its contents:
+If there is no control on the document's structure, the application could also process different well-formed messages with unintended consequences. The previous document could have contained additional tags to affect the behavior of the underlying application processing its contents:
 
 ```xml
 <buy>
@@ -99,7 +99,7 @@ Notice again how the value 123 is supplied as an `id`, but now the document incl
 
 ## Unrestrictive Schema
 
-Certain schemas do not offer enough restrictions for the type of data that each element can receive. This is what normally happens when using [DTD](https://www.w3schools.com/xml/xml_dtd_intro.asp); it has a very limited set of possibilities compared to the type of restrictions that can be applied in XML documents. This could expose the application to undesired values within elements or attributes that would be easy to constrain when using other schema languages. In the following example, a person’s `age` is validated against an inline [DTD](https://www.w3schools.com/xml/xml_dtd_intro.asp) schema:
+Certain schemas do not offer enough restrictions for the type of data that each element can receive. This is what normally happens when using [DTD](https://www.w3schools.com/xml/xml_dtd_intro.asp); it has a very limited set of possibilities compared to the type of restrictions that can be applied in XML documents. This could expose the application to undesired values within elements or attributes that would be easy to constrain when using other schema languages. In the following example, a person's `age` is validated against an inline [DTD](https://www.w3schools.com/xml/xml_dtd_intro.asp) schema:
 
 ```xml
 <!DOCTYPE person [
@@ -117,7 +117,7 @@ The previous document contains an inline [DTD](https://www.w3schools.com/xml/xml
 
 ## Improper Data Validation
 
-When schemas are insecurely defined and do not provide strict rules, they may expose the application to diverse situations. The result of this could be the disclosure of internal errors or documents that hit the application’s functionality with unexpected values.
+When schemas are insecurely defined and do not provide strict rules, they may expose the application to diverse situations. The result of this could be the disclosure of internal errors or documents that hit the application's functionality with unexpected values.
 
 ### String Data Types
 
@@ -174,7 +174,7 @@ To avoid repeating old errors, an XML schema may be defined to prevent processin
 </xs:schema>
 ```
 
-Limiting that `quantity` to an integer data type will avoid any unexpected characters. Once the application receives the previous message, it may calculate the final price by doing `price*quantity`. However, since this data type may allow negative values, it might allow a negative result on the user’s account if an attacker provides a negative number. What you probably want to see in here to avoid that logical vulnerability is positiveInteger instead of integer.
+Limiting that `quantity` to an integer data type will avoid any unexpected characters. Once the application receives the previous message, it may calculate the final price by doing `price*quantity`. However, since this data type may allow negative values, it might allow a negative result on the user's account if an attacker provides a negative number. What you probably want to see in here to avoid that logical vulnerability is positiveInteger instead of integer.
 
 #### Divide by Zero
 
@@ -239,7 +239,7 @@ Certain types of values should only be restricted to specific sets: traffic ligh
 </xs:element>
 ```
 
-By limiting the month element’s value to any of the previous values, the application will not be manipulating random strings.
+By limiting the month element's value to any of the previous values, the application will not be manipulating random strings.
 
 #### Ranges
 
@@ -323,7 +323,7 @@ The consequences of not defining a maximum number of occurrences could be worse 
 </xs:schema>
 ```
 
-The previous schema includes a root element named `operation`, which can contain an unlimited (`unbounded`) amount of buy elements. This is a common finding, since developers do not normally want to restrict maximum numbers of ocurrences. Applications using limitless occurrences should test what happens when they receive an extremely large amount of elements to be processed. Since computational resources are limited, the consequences should be analyzed and eventually a maximum number ought to be used instead of an `unbounded` value.
+The previous schema includes a root element named `operation`, which can contain an unlimited (`unbounded`) amount of buy elements. This is a common finding, since developers do not normally want to restrict maximum numbers of occurrences. Applications using limitless occurrences should test what happens when they receive an extremely large amount of elements to be processed. Since computational resources are limited, the consequences should be analyzed and eventually a maximum number ought to be used instead of an `unbounded` value.
 
 ## Jumbo Payloads
 
@@ -414,7 +414,7 @@ The permissions set on `name.dtd` allow any user on the system to make modificat
 
 ### Remote Schema Poisoning
 
-Schemas defined by external organizations are normally referenced remotely. If capable of diverting or accessing the network’s traffic, an attacker could cause a victim to fetch a distinct type of content rather than the one originally intended.
+Schemas defined by external organizations are normally referenced remotely. If capable of diverting or accessing the network's traffic, an attacker could cause a victim to fetch a distinct type of content rather than the one originally intended.
 
 #### Man-in-the-Middle (MitM) Attack
 
@@ -456,7 +456,7 @@ When accessing the remote file, the victim may be actually retrieving the conten
 
 #### Evil Employee Attack
 
-When third parties host and define schemas, the contents are not under the control of the schemas’ users. Any modifications introduced by a malicious employee—or an external attacker in control of these files—could impact all users processing the schemas. Subsequently, attackers could affect the confidentiality, integrity, or availability of other services (especially if the schema in use is [DTD](https://www.w3schools.com/xml/xml_dtd_intro.asp)).
+When third parties host and define schemas, the contents are not under the control of the schemas' users. Any modifications introduced by a malicious employee-or an external attacker in control of these files-could impact all users processing the schemas. Subsequently, attackers could affect the confidentiality, integrity, or availability of other services (especially if the schema in use is [DTD](https://www.w3schools.com/xml/xml_dtd_intro.asp)).
 
 ## XML Entity Expansion
 
@@ -507,19 +507,19 @@ public class parseDocument {
    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
    DocumentBuilder builder = factory.newDocumentBuilder();
    Document doc = builder.parse(new InputSource("contacts.xml"));
-   NodeList nodeLst = doc.getElementsByTagName("contact");
-   for (int s = 0; s < nodeLst.getLength(); s++) {
-     Node fstNode = nodeLst.item(s);
-     if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
-       Element fstElmnt = (Element) fstNode;
-       NodeList fstNmElmntLst = fstElmnt.getElementsByTagName("firstname");
-       Element fstNmElmnt = (Element) fstNmElmntLst.item(0);
-       NodeList fstNm = fstNmElmnt.getChildNodes();
-       System.out.println("First Name: "  + ((Node) fstNm.item(0)).getNodeValue());
-       NodeList lstNmElmntLst = fstElmnt.getElementsByTagName("lastname");
-       Element lstNmElmnt = (Element) lstNmElmntLst.item(0);
-       NodeList lstNm = lstNmElmnt.getChildNodes();
-       System.out.println("Last Name: " + ((Node) lstNm.item(0)).getNodeValue());
+   NodeList nodeList = doc.getElementsByTagName("contact");
+   for (int s = 0; s < nodeList.getLength(); s++) {
+     Node firstNode = nodeList.item(s);
+     if (firstNode.getNodeType() == Node.ELEMENT_NODE) {
+       Element firstElement = (Element) firstNode;
+       NodeList firstNameElementList = firstElement.getElementsByTagName("firstname");
+       Element firstNameElement = (Element) firstNameElementList.item(0);
+       NodeList firstName = firstNameElement.getChildNodes();
+       System.out.println("First Name: "  + ((Node) firstName.item(0)).getNodeValue());
+       NodeList lastNameElementList = firstElement.getElementsByTagName("lastname");
+       Element lastNameElement = (Element) lastNameElementList.item(0);
+       NodeList lastName = lastNameElement.getChildNodes();
+       System.out.println("Last Name: " + ((Node) lastName.item(0)).getNodeValue());
      }
     }
   } catch (Exception e) {
@@ -765,7 +765,7 @@ The previous XML defines an entity named `xxe`, which is in fact the contents of
 
 ### Server Side Request Forgery
 
-Server Side Request Forgery (SSRF ) happens when the server receives a malicious XML schema, which makes the server retrieve remote resources such as a file, a file via HTTP/HTTPS/FTP, etc. SSRF has been used to retrieve remote files, to prove a XXE when you cannot reflect back the file or perform port scanning, or perform brute force attacks on internal networks.
+Server Side Request Forgery (SSRF) happens when the server receives a malicious XML schema, which makes the server retrieve remote resources such as a file, a file via HTTP/HTTPS/FTP, etc. SSRF has been used to retrieve remote files, to prove a XXE when you cannot reflect back the file or perform port scanning, or perform brute force attacks on internal networks.
 
 #### External DNS Resolution
 
@@ -815,7 +815,7 @@ The second [DTD](https://www.w3schools.com/xml/xml_dtd_intro.asp) causes the sys
 
 The amount and type of information will depend on the type of implementation. Responses can be classified as follows, ranking from easy to complex:
 
-**1) Complete Disclosure**: The simplest and most unusual scenario, with complete disclosure you can clearly see what’s going on by receiving the complete responses from the server being queried. You have an exact representation of what happened when connecting to the remote host.
+**1) Complete Disclosure**: The simplest and most unusual scenario, with complete disclosure you can clearly see what's going on by receiving the complete responses from the server being queried. You have an exact representation of what happened when connecting to the remote host.
 
 **2) Error-based**: If you are unable to see the response from the remote server, you may be able to use the error response. Consider a web service leaking details on what went wrong in the SOAP Fault element when trying to establish a connection:
 
@@ -839,7 +839,3 @@ Once an attacker confirms that it is possible to perform a port scan, performing
 ]>
 <root>&user;</root>
 ```
-
-# Authors and Primary Editors
-
-Fernando Arnaboldi - fernando.arnaboldi@ioactive.com

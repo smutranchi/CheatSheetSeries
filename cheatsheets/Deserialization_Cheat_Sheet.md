@@ -20,7 +20,7 @@ The following language-specific guidance attempts to enumerate safe methodologie
 
 ### WhiteBox Review
 
-Check the use of [unserialize()](http://php.net/manual/en/function.unserialize.php) function and review how the external parameters are accepted. Use a safe, standard data interchange format such as JSON (via `json_decode()` and `json_encode()`) if you need to pass serialized data to the user.
+Check the use of [unserialize()](https://www.php.net/manual/en/function.unserialize.php) function and review how the external parameters are accepted. Use a safe, standard data interchange format such as JSON (via `json_decode()` and `json_encode()`) if you need to pass serialized data to the user.
 
 ## Python
 
@@ -52,7 +52,7 @@ print(yaml.load(document))
 
 ## Java
 
-The following techniques are all good for preventing attacks against deserialization against [Java's Serializable format](http://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html).
+The following techniques are all good for preventing attacks against deserialization against [Java's Serializable format](https://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html).
 
 Implementation advices: 
 * In your code, override the `ObjectInputStream#resolveClass()` method to prevent arbitrary classes from being deserialized. This safe behavior can be wrapped in a library like [SerialKiller](https://github.com/ikkisoft/SerialKiller). 
@@ -60,13 +60,13 @@ Implementation advices:
 
 ### WhiteBox Review
 
-Be aware of the following Java API uses for potential serilization vulnerability.
+Be aware of the following Java API uses for potential serialization vulnerability.
 
 1. `XMLdecoder` with external user defined parameters
 
 2. `XStream` with `fromXML` method (xstream version <= v1.46 is vulnerable to the serialization issue)
 
-3. `ObjectInputSteam` with `readObject`
+3. `ObjectInputStream` with `readObject`
 
 4. Uses of `readObject`, `readObjectNodData`, `readResolve` or `readExternal`
 
@@ -146,6 +146,7 @@ More complete implementations of this approach have been proposed by various com
 
 - [NibbleSec](https://github.com/ikkisoft/SerialKiller) - a library that allows whitelisting and blacklisting of classes that are allowed to be deserialized
 - [IBM](https://www.ibm.com/developerworks/library/se-lookahead/) - the seminal protection, written years before the most devastating exploitation scenarios were envisioned.
+- [Apache Commons IO classes](https://commons.apache.org/proper/commons-io/javadocs/api-2.5/org/apache/commons/io/serialization/ValidatingObjectInputStream.html)
 
 ### Harden All java.io.ObjectInputStream Usage with an Agent
 
@@ -236,11 +237,11 @@ if (suspectObject is SomeDangerousObjectType)
 }
 ```    
 
-For `BinaryFormatter` and `JSON.Net` it is possible to create a safer form of white list control useing a custom `SerializationBinder`.
+For `BinaryFormatter` and `JSON.Net` it is possible to create a safer form of white list control using a custom `SerializationBinder`.
 
 Try to keep up-to-date on known .Net insecure deserialization gadgets and pay special attention where such types can be created by your deserialization processes. **A deserializer can only instantiate types that it knows about**. 
 
-Try to keep any code that might create potential gagdets separate from any code that has internet connectivity. As an example `System.Windows.Data.ObjectDataProvider` used in WPF applications is a known gadget that allows arbitrary method invocation. It would be risky to have this a reference to this assembly in a REST service project that deserializes untrusted data.
+Try to keep any code that might create potential gadgets separate from any code that has internet connectivity. As an example `System.Windows.Data.ObjectDataProvider` used in WPF applications is a known gadget that allows arbitrary method invocation. It would be risky to have this a reference to this assembly in a REST service project that deserializes untrusted data.
 
 ### Known .NET RCE Gadgets
 
@@ -293,7 +294,7 @@ If the application knows before deserialization which messages will need to be p
 # References
 
 - [Java-Deserialization-Cheat-Sheet](https://github.com/GrrrDog/Java-Deserialization-Cheat-Sheet)
-- [Deserialization of untrusted data](https://www.owasp.org/index.php/Deserialization_of_untrusted_data)
+- [Deserialization of untrusted data](https://owasp.org/www-community/vulnerabilities/Deserialization_of_untrusted_data)
 - [Java Deserialization Attacks - German OWASP Day 2016](../assets/Deserialization_Cheat_Sheet_GOD16Deserialization.pdf)
 - [AppSecCali 2015 - Marshalling Pickles](http://www.slideshare.net/frohoff1/appseccali-2015-marshalling-pickles)
 - [FoxGlove Security - Vulnerability Announcement](http://foxglovesecurity.com/2015/11/06/what-do-weblogic-websphere-jboss-jenkins-opennms-and-your-application-have-in-common-this-vulnerability/#websphere)
@@ -317,9 +318,3 @@ If the application knows before deserialization which messages will need to be p
   - [James Forshaw - Black Hat USA 2012 - Are You My Type? Breaking .net Sandboxes Through Serialization](https://www.youtube.com/watch?v=Xfbu-pQ1tIc)
   - [Jonathan Birch BlueHat v17 - Dangerous Contents - Securing .Net Deserialization](https://www.youtube.com/watch?v=oxlD8VWWHE8)
   - [Alvaro Muñoz & Oleksandr Mirosh - Friday the 13th: Attacking JSON - AppSecUSA 2017](https://www.youtube.com/watch?v=NqHsaVhlxAQ)
-
-# Authors and Primary Editors
-
-Arshan Dabirsiaghi - arshan@contrastsecurity.org
-
-Tony Hsu (Hsiang-Chih) Shane Murnion

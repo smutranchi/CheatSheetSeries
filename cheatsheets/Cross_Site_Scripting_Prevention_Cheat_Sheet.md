@@ -1,14 +1,14 @@
 # Introduction
 
-This article provides a simple positive model for preventing [XSS](https://www.owasp.org/index.php/XSS) using output escaping/encoding properly. While there are a huge number of XSS attack vectors, following a few simple rules can completely defend against this serious attack.
+This article provides a simple positive model for preventing [XSS](https://owasp.org/www-community/attacks/xss/) using output escaping/encoding properly. While there are a huge number of XSS attack vectors, following a few simple rules can completely defend against this serious attack.
 
 This article does not explore the technical or business impact of XSS. Suffice it to say that it can lead to an attacker gaining the ability to do anything a victim can do through their browser.
 
-Both [reflected and stored XSS](https://www.owasp.org/index.php/XSS#Stored_and_Reflected_XSS_Attacks_) can be addressed by performing the appropriate validation and escaping on the server-side. [DOM Based XSS](https://www.owasp.org/index.php/DOM_Based_XSS) can be addressed with a special subset of rules described in the [DOM based XSS Prevention Cheat Sheet](DOM_based_XSS_Prevention_Cheat_Sheet.md).
+Both [reflected and stored XSS](https://owasp.org/www-community/attacks/xss/#stored-and-reflected-xss-attacks) can be addressed by performing the appropriate validation and escaping on the server-side. [DOM Based XSS](https://owasp.org/www-community/attacks/DOM_Based_XSS) can be addressed with a special subset of rules described in the [DOM based XSS Prevention Cheat Sheet](DOM_based_XSS_Prevention_Cheat_Sheet.md).
 
-For a cheatsheet on the attack vectors related to XSS, please refer to the [XSS Filter Evasion Cheat Sheet](https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet). More background on browser security and the various browsers can be found in the [Browser Security Handbook](https://code.google.com/archive/p/browsersec/).
+For a cheatsheet on the attack vectors related to XSS, please refer to the [XSS Filter Evasion Cheat Sheet](https://owasp.org/www-community/xss-filter-evasion-cheatsheet). More background on browser security and the various browsers can be found in the [Browser Security Handbook](https://code.google.com/archive/p/browsersec/).
 
-Before reading this cheatsheet, it is important to have a fundamental understanding of [Injection Theory](https://www.owasp.org/index.php/Injection_Theory).
+Before reading this cheatsheet, it is important to have a fundamental understanding of [Injection Theory](https://owasp.org/www-community/Injection_Theory).
 
 ## A Positive XSS Prevention Model
 
@@ -31,7 +31,7 @@ Writing these encoders is not tremendously difficult, but there are quite a few 
 
 Microsoft provides an encoding library named the [Microsoft Anti-Cross Site Scripting Library](https://archive.codeplex.com/?p=wpl) for the .NET platform and ASP.NET Framework has built-in [ValidateRequest](https://msdn.microsoft.com/en-us/library/ms972969.aspx#securitybarriers_topic6) function that provides **limited** sanitization.
 
-The [OWASP Java Encoder Project](https://www.owasp.org/index.php/OWASP_Java_Encoder_Project) provides a high-performance encoding library for Java.
+The [OWASP Java Encoder Project](https://owasp.org/www-project-java-encoder/) provides a high-performance encoding library for Java.
 
 # XSS Prevention Rules
 
@@ -174,7 +174,7 @@ Except for alphanumeric characters, escape all characters less than 256 with the
 
 If an event handler is properly quoted, breaking out requires the corresponding quote. However, we have intentionally made this rule quite broad because event handler attributes are often left unquoted. Unquoted attributes can be broken out of with many characters including `[space]` `%` `*` `+` `,` `-` `/` `;` `<` `=` `>` `^` and `|`.
 
-Also, a `</script>` closing tag will close a script block even though it is inside a quoted string because the HTML parser runs before the JavaScript parser. Please note this is an aggressive escaping policy that over-encodes. If there is a guarantee that proper quoting is accomplished then a much smaller character set is needed. Please look at the [OWASP Java Encoder](https://www.owasp.org/index.php/OWASP_Java_Encoder_Project#tab=Use_the_Java_Encoder_Project) JavaScript escaping examples for examples of proper JavaScript use that requires minimal escaping.
+Also, a `</script>` closing tag will close a script block even though it is inside a quoted string because the HTML parser runs before the JavaScript parser. Please note this is an aggressive escaping policy that over-encodes. If there is a guarantee that proper quoting is accomplished then a much smaller character set is needed. Please look at the [OWASP Java Encoder](https://wiki.owasp.org/index.php/OWASP_Java_Encoder_Project#tab=Use_the_Java_Encoder_Project) JavaScript escaping examples for examples of proper JavaScript use that requires minimal escaping.
 
 ### RULE \#3.1 - HTML escape JSON values in an HTML context and read the data with JSON.parse
 
@@ -244,7 +244,7 @@ An alternative to escaping and unescaping JSON directly in JavaScript, is to nor
 
 Rule \#4 is for when you want to put untrusted data into a stylesheet or a style tag. CSS is surprisingly powerful, and can be used for numerous attacks. Therefore, it's important that you only use untrusted data in a property **value** and not into other places in style data. You should stay away from putting untrusted data into complex properties like `url`, `behavior`, and custom (`-moz-binding`). 
 
-You should also not put untrusted data into IE’s expression property value which allows JavaScript.
+You should also not put untrusted data into IE's expression property value which allows JavaScript.
 
 Property value:
 
@@ -289,7 +289,7 @@ Rule \#5 is for when you want to put untrusted data into HTTP GET parameter valu
 <a href="http://www.somesite.com?test=...ESCAPE UNTRUSTED DATA BEFORE PUTTING HERE...">link</a >  
 ``` 
 
-Except for alphanumeric characters, escape all characters with ASCII values less than 256 with the `%HH` escaping format. Including untrusted data in data: URLs should not be allowed as there is no good way to disable attacks with escaping to prevent switching out of the URL. 
+Except for alphanumeric characters, escape all characters with ASCII values less than 256 with the `%HH` escaping format. Including untrusted data in `data:` URLs should not be allowed as there is no good way to disable attacks with escaping to prevent switching out of the URL. 
 
 All attributes should be quoted. Unquoted attributes can be broken out of with many characters including `[space]` `%` `*` `+` `,` `-` `/` `;` `<` `=` `>` `^` and `|`. Note that entity encoding is useless in this context.
 
@@ -311,7 +311,7 @@ If your application handles markup -- untrusted input that is supposed to contai
 
 **[HtmlSanitizer](https://github.com/mganss/HtmlSanitizer)**
 
-An open-source .Net library. The HTML is cleaned with a white list approach. All allowed tags and attributes can be configured. The library is unit tested with the OWASP [XSS Filter Evasion Cheat Sheet](https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet)
+An open-source .Net library. The HTML is cleaned with a white list approach. All allowed tags and attributes can be configured. The library is unit tested with the OWASP [XSS Filter Evasion Cheat Sheet](https://owasp.org/www-community/xss-filter-evasion-cheatsheet)
 
 ```csharp
 var sanitizer = new HtmlSanitizer();
@@ -319,7 +319,7 @@ sanitizer.AllowedAttributes.Add("class");
 var sanitized = sanitizer.Sanitize(html);
 ```
 
-**[OWASP Java HTML Sanitizer](https://www.owasp.org/index.php/OWASP_Java_HTML_Sanitizer_Project)**
+**[OWASP Java HTML Sanitizer](https://owasp.org/www-project-java-html-sanitizer/)**
 
 ```java
 import org.owasp.html.Sanitizers;
@@ -339,18 +339,22 @@ The `SanitizeHelper` module provides a set of methods for scrubbing text of unde
 ```
 
 **Other libraries that provide HTML Sanitization include:**
-- [HTML sanitizer](https://github.com/google/closure-library/tree/master/closure/goog/html/sanitizer) from [Google Closure Library](https://developers.google.com/closure/library/)
-- [PHP HTML Purifier](http://htmlpurifier.org/).
-- [JavaScript/Node.js Bleach](https://github.com/ecto/bleach).
-- [Python Bleach](https://pypi.python.org/pypi/bleach).
+- [HTML sanitizer](https://github.com/google/closure-library/blob/master/closure/goog/html/sanitizer/htmlsanitizer.js) from [Google Closure Library](https://developers.google.com/closure/library/) (JavaScript/Node.js, [docs](https://google.github.io/closure-library/api/goog.html.sanitizer.HtmlSanitizer.html))
+- [DOMPurify](https://github.com/cure53/DOMPurify) (JavaScript, requires [jsdom](https://github.com/jsdom/jsdom) for Node.js)
+- [PHP HTML Purifier](http://htmlpurifier.org/)
+- [Python Bleach](https://pypi.python.org/pypi/bleach)
 
-## RULE \#7 - Prevent DOM-based XSS
+## RULE \#7 - Avoid JavaScript URL's
+
+Untrusted URL's that include the protocol javascript: will execute javascript code when used in URL DOM locations such as anchor tag HREF attributes or iFrame src locations. Be sure to validate all untrusted URL's to ensure they only contain safe schemes such as HTTPS.
+
+## RULE \#8 - Prevent DOM-based XSS
 
 For details on what DOM-based XSS is, and defenses against this type of XSS flaw, please see the OWASP article on [DOM based XSS Prevention Cheat Sheet](DOM_based_XSS_Prevention_Cheat_Sheet.md).
 
 ## Bonus Rule \#1: Use HTTPOnly cookie flag
 
-Preventing all XSS flaws in an application is hard, as you can see. To help mitigate the impact of an XSS flaw on your site, OWASP also recommends you set the HTTPOnly flag on your session cookie and any custom cookies you have that are not accessed by any Javascript you wrote. This cookie flag is typically on by default in .NET apps, but in other languages you have to set it manually. For more details on the HTTPOnly cookie flag, including what it does, and how to use it, see the OWASP article on [HTTPOnly](https://www.owasp.org/index.php/HTTPOnly).
+Preventing all XSS flaws in an application is hard, as you can see. To help mitigate the impact of an XSS flaw on your site, OWASP also recommends you set the HTTPOnly flag on your session cookie and any custom cookies you have that are not accessed by any JavaScript you wrote. This cookie flag is typically on by default in .NET apps, but in other languages you have to set it manually. For more details on the HTTPOnly cookie flag, including what it does, and how to use it, see the OWASP article on [HTTPOnly](https://owasp.org/www-community/HttpOnly).
 
 ## Bonus Rule \#2: Implement Content Security Policy
 
@@ -362,7 +366,7 @@ For example this CSP:
 Content-Security-Policy: default-src: 'self'; script-src: 'self' static.domain.tld
 ```
 
-Will instruct web browser to load all resources only from the page's origin and JavaScript source code files additionaly from `static.domain.tld`. For more details on Content Security Policy, including what it does, and how to use it, see this article on [Content Security Policy](https://content-security-policy.com).
+Will instruct web browser to load all resources only from the page's origin and JavaScript source code files additionally from `static.domain.tld`. For more details on Content Security Policy, including what it does, and how to use it, see this article on [Content Security Policy](https://content-security-policy.com).
 
 ## Bonus Rule \#3: Use an Auto-Escaping Template System
 
@@ -372,15 +376,26 @@ Many web application frameworks provide automatic contextual escaping functional
 
 This HTTP [response header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection) enables the Cross-site scripting (XSS) filter built into some modern web browsers. This header is usually enabled by default anyway, so the role of this header is to re-enable the filter for this particular website if it was disabled by the user.
 
-## Bonus Rule \#5: Properly use modern JS frameworks like Angular (2+) or ReactJS
+Note that Firefox never supported X-XSS-Protection and Chrome and Edge have announced they are dropping support for it.
 
-Modern javascript frameworks have pretty good XSS protection built in. It is important how to use them properly to benefit from it.
+## Bonus Rule \#5: Properly use modern JS frameworks
 
-When using ReactJS *do not use `dangerouslySetInnerHTML`*. If you really, really really have to use `dangerouslySetInnerHTML` remember that now all framework protections are turned off and you have to escape or sanitize all the data by yourself.
+Modern JavaScript frameworks have pretty good XSS protection built in.
+Usually framework API allows bypassing that protection in order to render unescaped HTML or include executable code.
 
-For Angular (2+) remember to build Angular templates with `-prod` parameter (`ng build --prod`) in order to avoid template injection.
+The following API methods and props in the table below are considered dangerous and by using them you are potentially exposing your users to an XSS vulnerability.
+If you **really** have to use them remember that now all the data must be [sanitized](#rule-6---sanitize-html-markup-with-a-library-designed-for-the-job) by yourself.
 
-And also remember to update your framework to the newest version, with all possible bug fixes, as soon as possible. 
+| JavaScript framework | Dangerous methods / props                                                                     |
+|----------------------|------------------------------------------------------------------------------------------------|
+| Angular (2+)         | [bypassSecurityTrust](https://angular.io/guide/security#bypass-security-apis)                  |       
+| React                | [`dangerouslySetInnerHTML`](https://reactjs.org/docs/dom-elements.html#dangerouslysetinnerhtml)|   
+| Svelte               | [`{@html ...}`](https://svelte.dev/docs#html)                                                  |
+| Vue (2+)             | [`v-html`](https://vuejs.org/v2/api/#v-html)                                                   |
+
+Avoid template injection in Angular by building with `--prod` parameter (`ng build --prod`).
+
+Also remember to keep your framework updated to the latest version with all possible bug fixes. 
 
 # XSS Prevention Rules Summary
 
@@ -391,7 +406,7 @@ And also remember to update your framework to the newest version, with all possi
 | String    | GET Parameter                            | `<a href="/site/search?value=UNTRUSTED DATA ">clickme</a>`                                               | URL Encoding (rule \#5).                                                                                                                                                                       |
 | String    | Untrusted URL in a SRC or HREF attribute | `<a href="UNTRUSTED URL ">clickme</a> <iframe src="UNTRUSTED URL " />`                                   | Canonicalize input, URL Validation, Safe URL verification, Whitelist http and https URL's only (Avoid the JavaScript Protocol to Open a new Window), Attribute encoder.                        |
 | String    | CSS Value                                | `html <div style="width: UNTRUSTED DATA ;">Selection</div>`                                                   | Strict structural validation (rule \#4), CSS Hex encoding, Good design of CSS Features.                                                                                                        |
-| String    | Javascript Variable                      | `<script>var currentValue='UNTRUSTED DATA ';</script> <script>someFunction('UNTRUSTED DATA ');</script>` | Ensure JavaScript variables are quoted, JavaScript Hex Encoding, JavaScript Unicode Encoding, Avoid backslash encoding (`\"` or `\'` or `\\`).                                                 |
+| String    | JavaScript Variable                      | `<script>var currentValue='UNTRUSTED DATA ';</script> <script>someFunction('UNTRUSTED DATA ');</script>` | Ensure JavaScript variables are quoted, JavaScript Hex Encoding, JavaScript Unicode Encoding, Avoid backslash encoding (`\"` or `\'` or `\\`).                                                 |
 | HTML      | HTML Body                                | `<div>UNTRUSTED HTML</div>`                                                                             | HTML Validation (JSoup, AntiSamy, HTML Sanitizer...).                                                                                                                                          |
 | String    | DOM XSS                                  | `<script>document.write("UNTRUSTED INPUT: " + document.location.hash );<script/>`                        | [DOM based XSS Prevention Cheat Sheet](DOM_based_XSS_Prevention_Cheat_Sheet.md)                                                                                                                |
 
@@ -417,29 +432,21 @@ The purpose of output encoding (as it relates to Cross Site Scripting) is to con
 
 The following article describes how to exploit different kinds of XSS Vulnerabilities that this article was created to help you avoid:
 
-- OWASP: [XSS Filter Evasion Cheat Sheet](https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet) - Based on - [RSnake's: "XSS Cheat Sheet"](https://www.in-secure.org/misc/xss/xss.html).
+- OWASP: [XSS Filter Evasion Cheat Sheet](https://owasp.org/www-community/xss-filter-evasion-cheatsheet).
 
 **Description of XSS Vulnerabilities**
 
-- OWASP article on [XSS](https://www.owasp.org/index.php/XSS) Vulnerabilities.
+- OWASP article on [XSS](https://owasp.org/www-community/attacks/xss/) Vulnerabilities.
 
 **Discussion on the Types of XSS Vulnerabilities**
 
-- [Types of Cross-Site Scripting](https://www.owasp.org/index.php/Types_of_Cross-Site_Scripting).
+- [Types of Cross-Site Scripting](https://owasp.org/www-community/Types_of_Cross-Site_Scripting).
 
 **How to Review Code for Cross-site scripting Vulnerabilities**
 
-- [OWASP Code Review Guide](https://www.owasp.org/index.php/:Category:OWASP_Code_Review_Project) article on [Reviewing Code for Cross-site scripting](https://www.owasp.org/index.php/Reviewing_Code_for_Cross-site_scripting) Vulnerabilities.
+- [OWASP Code Review Guide](https://owasp.org/www-project-code-review-guide/) article on [Reviewing Code for Cross-site scripting](https://wiki.owasp.org/index.php/Reviewing_Code_for_Cross-site_scripting) Vulnerabilities.
 
 **How to Test for Cross-site scripting Vulnerabilities**
 
-- [OWASP Testing Guide](https://www.owasp.org/index.php/:Category:OWASP_Testing_Project) article on [Testing for Cross site scripting](https://www.owasp.org/index.php/Testing_for_Cross_site_scripting) Vulnerabilities.
-- [XSS Experimental Minimal Encoding Rules](https://www.owasp.org/index.php/XSS_Experimental_Minimal_Encoding_Rules)
-
-# Authors and Primary Editors
-
-Jeff Williams - jeff.williams@contrastsecurity.com
-
-Jim Manico - jim@owasp.org
-
-Neil Mattatall - neil@owasp.org
+- [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) article on [Testing for Cross site scripting](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/11-Client_Side_Testing/README.html) Vulnerabilities.
+- [XSS Experimental Minimal Encoding Rules](https://wiki.owasp.org/index.php/XSS_Experimental_Minimal_Encoding_Rules)

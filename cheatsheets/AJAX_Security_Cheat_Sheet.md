@@ -2,7 +2,7 @@
 
 This document will provide a starting point for AJAX security and will hopefully be updated and expanded reasonably often to provide more detailed information about specific frameworks and technologies.
 
-## Client Side (Javascript)
+## Client Side (JavaScript)
 
 ### Use .innerText instead of .innerHtml
 
@@ -14,11 +14,11 @@ The use of `.innerText` will prevent most XSS problems as it will automatically 
 
 ### Canonicalize data to consumer (read: encode before use)
 
-When using data to build HTML, script, CSS, XML, JSON, etc. make sure you take into account how that data must be presented in a literal sense to keep it's logical meaning. 
+When using data to build HTML, script, CSS, XML, JSON, etc. make sure you take into account how that data must be presented in a literal sense to keep its logical meaning. 
 
 Data should be properly encoded before used in this manner to prevent injection style issues, and to make sure the logical meaning is preserved.
 
-[Check out the OWASP Java Encoder Project.](https://www.owasp.org/index.php/OWASP_Java_Encoder_Project)
+[Check out the OWASP Java Encoder Project.](https://owasp.org/www-project-java-encoder/)
 
 ### Don't rely on client logic for security
 
@@ -63,7 +63,7 @@ Take a look at the [Cross-Site Request Forgery (CSRF) Prevention](Cross-Site_Req
 
 #### Review AngularJS JSON Hijacking Defense Mechanism
 
-See the [JSON Vulnerability Protection](https://docs.angularjs.org/api/ng/service/$http) section of the AngularJS documentation.
+See the [JSON Vulnerability Protection](https://docs.angularjs.org/api/ng/service/$http#json-vulnerability-protection) section of the AngularJS documentation.
 
 #### Always return JSON with an Object on the outside
 
@@ -104,9 +104,3 @@ Use the framework and be safe, do it by hand and have security issues.
 ### Use JSON And XML Schema for Webservices
 
 You need to use a 3rd party library to validate web services.
-
-# Authors and Primary Editors
-
-Til Mas
-
-Michael Eddington

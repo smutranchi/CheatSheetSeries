@@ -1,12 +1,12 @@
 # Introduction
 
-*XML eXternal Entity injection* (XXE), which is now part of the [OWASP Top 10](https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project) via the point **A4**, is a type of attack against an application that parses XML input.
+*XML eXternal Entity injection* (XXE), which is now part of the [OWASP Top 10](https://owasp.org/www-project-top-ten/OWASP_Top_Ten_2017/Top_10-2017_A4-XML_External_Entities_%28XXE%29) via the point **A4**, is a type of attack against an application that parses XML input.
 
 XXE issue is referenced under the ID [611](https://cwe.mitre.org/data/definitions/611.html) in the [Common Weakness Enumeration](https://cwe.mitre.org/index.html) referential.
 
 This attack occurs when untrusted XML input containing a **reference to an external entity is processed by a weakly configured XML parser**.
 
-This attack may lead to the disclosure of confidential data, denial of service, [Server Side Request Forgery](https://www.owasp.org/index.php/Server_Side_Request_Forgery) (SSRF), port scanning from the perspective of the machine where the parser is located, and other system impacts. The following guide provides concise information to prevent this vulnerability.
+This attack may lead to the disclosure of confidential data, denial of service, [Server Side Request Forgery](https://owasp.org/www-community/attacks/Server_Side_Request_Forgery) (SSRF), port scanning from the perspective of the machine where the parser is located, and other system impacts. The following guide provides concise information to prevent this vulnerability.
 
 For more information on XXE, please visit [XML External Entity (XXE)](https://en.wikipedia.org/wiki/XML_external_entity_attack).
 
@@ -18,7 +18,7 @@ The safest way to prevent XXE is always to disable DTDs (External Entities) comp
 factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 ```
 
-Disabling [DTD](https://www.w3schools.com/xml/xml_dtd.asp)s also makes the parser secure against denial of services (DOS) attacks such as [Billion Laughs](https://en.wikipedia.org/wiki/Billion_laughs_attack). If it is not possible to disable DTDs completely, then external entities and external document type declarations must be disabled in the way that’s specific to each parser.
+Disabling [DTD](https://www.w3schools.com/xml/xml_dtd.asp)s also makes the parser secure against denial of services (DOS) attacks such as [Billion Laughs](https://en.wikipedia.org/wiki/Billion_laughs_attack). If it is not possible to disable DTDs completely, then external entities and external document type declarations must be disabled in the way that's specific to each parser.
 
 Detailed XXE Prevention guidance for a number of languages and commonly used XML parsers in those languages is provided below.
 
@@ -56,7 +56,8 @@ Use of `XercesDOMParser` do this to prevent XXE:
 
 ``` cpp
 XercesDOMParser *parser = new XercesDOMParser;
-parser->setCreateEntityReferenceNodes(false);
+parser->setCreateEntityReferenceNodes(true);
+parser->setDisableDefaultEntityResolution(true);
 ```
 
 Use of SAXParser, do this to prevent XXE:
@@ -151,18 +152,18 @@ try {
 DocumentBuilder safebuilder = dbf.newDocumentBuilder();
 ```
 
-[Xerces 1](http://xerces.apache.org/xerces-j/) [Features](http://xerces.apache.org/xerces-j/features.html):
+[Xerces 1](https://xerces.apache.org/xerces-j/) [Features](https://xerces.apache.org/xerces-j/features.html):
 
-- Do not include external entities by setting [this feature](http://xerces.apache.org/xerces-j/features.html#external-general-entities) to `false`.
-- Do not include parameter entities by setting [this feature](http://xerces.apache.org/xerces-j/features.html#external-parameter-entities) to `false`.
-- Do not include external DTDs by setting [this feature](http://xerces.apache.org/xerces-j/features.html#load-external-dtd) to `false`.
+- Do not include external entities by setting [this feature](https://xerces.apache.org/xerces-j/features.html#external-general-entities) to `false`.
+- Do not include parameter entities by setting [this feature](https://xerces.apache.org/xerces-j/features.html#external-parameter-entities) to `false`.
+- Do not include external DTDs by setting [this feature](https://xerces.apache.org/xerces-j/features.html#load-external-dtd) to `false`.
 
-[Xerces 2](http://xerces.apache.org/xerces2-j/) [Features](http://xerces.apache.org/xerces2-j/features.html):
+[Xerces 2](https://xerces.apache.org/xerces2-j/) [Features](https://xerces.apache.org/xerces2-j/features.html):
 
-- Disallow an inline DTD by setting [this feature](http://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl) to `true`.
-- Do not include external entities by setting [this feature](http://xerces.apache.org/xerces2-j/features.html#external-general-entities) to `false`.
-- Do not include parameter entities by setting [this feature](http://xerces.apache.org/xerces2-j/features.html#external-parameter-entities) to `false`.
-- Do not include external DTDs by setting [this feature](http://xerces.apache.org/xerces-j/features.html#load-external-dtd) to `false`.
+- Disallow an inline DTD by setting [this feature](https://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl) to `true`.
+- Do not include external entities by setting [this feature](https://xerces.apache.org/xerces2-j/features.html#external-general-entities) to `false`.
+- Do not include parameter entities by setting [this feature](https://xerces.apache.org/xerces2-j/features.html#external-parameter-entities) to `false`.
+- Do not include external DTDs by setting [this feature](https://xerces.apache.org/xerces-j/features.html#load-external-dtd) to `false`.
 
 **Note:** The above defenses require Java 7 update 67, Java 8 update 20, or above, because the above countermeasures for `DocumentBuilderFactory` and SAXParserFactory are broken in earlier Java versions, per: [CVE-2014-6517](http://www.cvedetails.com/cve/CVE-2014-6517/).
 
@@ -266,9 +267,34 @@ builder.setFeature("http://xml.org/sax/features/external-parameter-entities", fa
 Document doc = builder.build(new File(fileName));
 ```
 
+## No-op EntityResolver
+
+For APIs that take an `EntityResolver`, you can neutralize an XML parser's ability to resolve entities by [supplying a no-op implementation](https://wiki.sei.cmu.edu/confluence/display/java/IDS17-J.+Prevent+XML+External+Entity+Attacks):
+
+```java
+public final class NoOpEntityResolver implements EntityResolver {
+    public InputSource resolveEntity(String publicId, String systemId) {
+        return new InputSource(new StringReader(""));
+    }
+}
+
+// ...
+
+xmlReader.setEntityResolver(new NoOpEntityResolver());
+documentBuilder.setEntityResolver(new NoOpEntityResolver());
+```
+
+or more simply:
+
+```java
+EntityResolver noop = (publicId, systemId) -> new InputSource(new StringReader(""));
+xmlReader.setEntityResolver(noop);
+documentBuilder.setEntityResolver(noop);
+```
+
 ## JAXB Unmarshaller
 
-Since a `javax.xml.bind.Unmarshaller` parses XML and does not support any flags for disabling XXE, it’s imperative to parse the untrusted XML through a configurable secure parser first, generate a source object as a result, and pass the source object to the Unmarshaller. For example:
+Since a `javax.xml.bind.Unmarshaller` parses XML and does not support any flags for disabling XXE, it's imperative to parse the untrusted XML through a configurable secure parser first, generate a source object as a result, and pass the source object to the Unmarshaller. For example:
 
 ``` java
 //Disable XXE
@@ -285,9 +311,13 @@ Unmarshaller um = jc.createUnmarshaller();
 um.unmarshal(xmlSource);
 ```
 
+### Java 8 and up
+
+Since [JDK-8010393](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8010393), which is in OpenJDK 8 beta 86, `javax.xml.bind.Unmarshaller` instances are safe by default. The other classes mentioned here are still unsafe by default in Java 8.
+
 ## XPathExpression
 
-A `javax.xml.xpath.XPathExpression` is similar to an Unmarshaller where it can’t be configured securely by itself, so the untrusted data must be parsed through another securable XML parser first.
+A `javax.xml.xpath.XPathExpression` can not be configured securely by itself, so the untrusted data must be parsed through another securable XML parser first.
 
 For example:
 
@@ -312,7 +342,7 @@ As such, we'd strongly recommend completely avoiding the use of this class and r
 
 ## Other XML Parsers
 
-There are many 3rd party libraries that parse XML either directly or through their use of other libraries. Please test and verify their XML parser is secure against XXE by default. If the parser is not secure by default, look for flags supported by the parser to disable all possible external resource inclusions like the examples given above. If there’s no control exposed to the outside, make sure the untrusted content is passed through a secure parser first and then passed to insecure 3rd party parser similar to how the Unmarshaller is secured.
+There are many 3rd party libraries that parse XML either directly or through their use of other libraries. Please test and verify their XML parser is secure against XXE by default. If the parser is not secure by default, look for flags supported by the parser to disable all possible external resource inclusions like the examples given above. If there's no control exposed to the outside, make sure the untrusted content is passed through a secure parser first and then passed to insecure 3rd party parser similar to how the Unmarshaller is secured.
 
 ### Spring Framework MVC/OXM XXE Vulnerabilities
 
@@ -348,6 +378,10 @@ marshaller.unmarshal(new StreamSource(new StringReader(some_string_containing_XM
 ``` 
 
 So, per the [Spring OXM CVE writeup](https://pivotal.io/security/cve-2013-4152), the above is now safe. But if you were to use a DOMSource or StAXSource instead, it would be up to you to configure those sources to be safe from XXE.
+
+### Castor
+
+Castor is a data binding framework for Java. It allows conversion between Java objects, XML, and relational tables. The XML features in Castor **prior to version 1.3.3** are vulnerable to XXE, and should be upgraded to the latest version. For additional information, check the official [XML configuration file](https://castor-data-binding.github.io/castor/reference-guide/reference/xml/xml-properties.html)
 
 # .NET
 
@@ -481,7 +515,7 @@ string xml = nav.InnerXml.ToString();
 
 ## XslCompiledTransform
 
-`System.Xml.Xsl.XslCompiledTransform` (an XML transformer) is safe by default as long as the parser it’s given is safe.
+`System.Xml.Xsl.XslCompiledTransform` (an XML transformer) is safe by default as long as the parser it's given is safe.
 
 It is safe by default because the default parser of the `Transform()` methods is an `XmlReader`, which is safe by default (per above).
 
@@ -512,7 +546,7 @@ However, to completely disable XXE in an `NSXMLDocument` in any version of iOS y
 
 # PHP
 
-Per [the PHP documentation](http://php.net/manual/en/function.libxml-disable-entity-loader.php), the following should be set when using the default PHP XML parser in order to prevent XXE:
+Per [the PHP documentation](https://www.php.net/manual/en/function.libxml-disable-entity-loader.php), the following should be set when using the default PHP XML parser in order to prevent XXE:
 
 ``` php
 libxml_disable_entity_loader(true);
@@ -520,23 +554,29 @@ libxml_disable_entity_loader(true);
 
 A description of how to abuse this in PHP is presented in a good [SensePost article](https://www.sensepost.com/blog/2014/revisting-xxe-and-abusing-protocols/) describing a cool PHP based XXE vulnerability that was fixed in Facebook.
 
+# Python
+
+The Python 3 official documentation contains a section on [xml vulnerabilities](https://docs.python.org/3/library/xml.html#xml-vulnerabilities). For Python 2, you can refer to this [page](https://docs.Python.org/2/library/xml.html#xml-vulnerabilities). 
+
+> The end of life for Python 2 is expected to be January 1st, 2020.
+
+The following table gives an overview of various modules in Python 3 used for XML parsing and whether or not they are vulnerable.
+
+| Attack Type               | sax        | etree      | minidom    | pulldom    | xmlrpc     |
+|---------------------------|------------|------------|------------|------------|------------|
+| Billion Laughs            | Vulnerable | Vulnerable | Vulnerable | Vulnerable | Vulnerable |
+| Quadratic Blowup          | Vulnerable | Vulnerable | Vulnerable | Vulnerable | Vulnerable |
+| External Entity Expansion | Safe       | Safe       | Safe       | Safe       | Safe       |
+| DTD Retrieval             | Safe       | Safe       | Safe       | Safe       | Safe       |
+| Decompression Bomb        | Safe       | Safe       | Safe       | Safe       | Vulnerable |
+
+To protect your application from the applicable attacks, [two packages](https://docs.python.org/3/library/xml.html#the-defusedxml-and-defusedexpat-packages) exist to help you sanitize your input and protect your application against DDoS and remote attacks.
+
 # References
 
 - [XXE by InfoSecInstitute](https://resources.infosecinstitute.com/identify-mitigate-xxe-vulnerabilities/)
-- [OWASP Top 10-2017 A4: XML External Entities (XXE)](https://www.owasp.org/index.php/Top_10-2017_A4-XML_External_Entities_(XXE))
+- [OWASP Top 10-2017 A4: XML External Entities (XXE)](https://owasp.org/www-project-top-ten/OWASP_Top_Ten_2017/Top_10-2017_A4-XML_External_Entities_%28XXE%29)
 - [Timothy Morgan's 2014 paper: "XML Schema, DTD, and Entity Attacks"](https://vsecurity.com//download/papers/XMLDTDEntityAttacks.pdf)
 - [FindSecBugs XXE Detection](https://find-sec-bugs.github.io/bugs.htm#XXE_SAXPARSER)
 - [XXEbugFind Tool](https://github.com/ssexxe/XXEBugFind)
-- [Testing for XML Injection (OTG-INPVAL-008)](https://www.owasp.org/index.php/Testing_for_XML_Injection_(OTG-INPVAL-008))
-
-# Authors and Primary Editors
-
-Dave Wichers - dave.wichers@owasp.org
-
-Xiaoran Wang - xiaoran@attacker-domain.com
-
-James Jardine - james@jardinesoftware.com
-
-Tony Hsu (Hsiang-Chih)
-
-Dean Fleming
+- [Testing for XML Injection](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/07-Input_Validation_Testing/07-Testing_for_XML_Injection.html)

@@ -12,9 +12,9 @@ HTTP is a stateless protocol ([RFC2616](https://www.ietf.org/rfc/rfc2616.txt) se
 
 ![SessionDiagram](../assets/Session_Management_Cheat_Sheet_Diagram.png)
 
-The session ID or token binds the user authentication credentials (in the form of a user session) to the user HTTP traffic and the appropriate access controls enforced by the web application. The complexity of these three components (authentication, session management, and access control) in modern web applications, plus the fact that its implementation and binding resides on the web developer’s hands (as web development framework do not provide strict relationships between these modules), makes the implementation of a secure session management module very challenging.
+The session ID or token binds the user authentication credentials (in the form of a user session) to the user HTTP traffic and the appropriate access controls enforced by the web application. The complexity of these three components (authentication, session management, and access control) in modern web applications, plus the fact that its implementation and binding resides on the web developer's hands (as web development framework do not provide strict relationships between these modules), makes the implementation of a secure session management module very challenging.
 
-The disclosure, capture, prediction, brute force, or fixation of the session ID will lead to session hijacking (or sidejacking) attacks, where an attacker is able to fully impersonate a victim user in the web application. Attackers can perform two types of session hijacking attacks, targeted or generic. In a targeted attack, the attacker’s goal is to impersonate a specific (or privileged) web application victim user. For generic attacks, the attacker’s goal is to impersonate (or get access as) any valid or legitimate user in the web application.
+The disclosure, capture, prediction, brute force, or fixation of the session ID will lead to session hijacking (or sidejacking) attacks, where an attacker is able to fully impersonate a victim user in the web application. Attackers can perform two types of session hijacking attacks, targeted or generic. In a targeted attack, the attacker's goal is to impersonate a specific (or privileged) web application victim user. For generic attacks, the attacker's goal is to impersonate (or get access as) any valid or legitimate user in the web application.
 
 # Session ID Properties
 
@@ -26,7 +26,7 @@ With the goal of implementing secure session IDs, the generation of identifiers 
 
 The name used by the session ID should not be extremely descriptive nor offer unnecessary details about the purpose and meaning of the ID.
 
-The session ID names used by the most common web application development frameworks [can be easily fingerprinted](https://www.owasp.org/index.php/Category:OWASP_Cookies_Database), such as `PHPSESSID` (PHP), `JSESSIONID` (J2EE), `CFID` & `CFTOKEN` (ColdFusion), `ASP.NET_SessionId` (ASP .NET), etc. Therefore, the session ID name can disclose the technologies and programming languages used by the web application.
+The session ID names used by the most common web application development frameworks [can be easily fingerprinted](https://wiki.owasp.org/index.php/Category:OWASP_Cookies_Database), such as `PHPSESSID` (PHP), `JSESSIONID` (J2EE), `CFID` & `CFTOKEN` (ColdFusion), `ASP.NET_SessionId` (ASP .NET), etc. Therefore, the session ID name can disclose the technologies and programming languages used by the web application.
 
 It is recommended to change the default session ID name of the web development framework to a generic name, such as `id`.
 
@@ -52,7 +52,7 @@ The session ID value must provide at least `64 bits` of entropy (if a good PRNG 
 
 - The session ID entropy is really affected by other external and difficult to measure factors, such as the number of concurrent active sessions the web application commonly has, the absolute session expiration timeout, the amount of session ID guesses per second the attacker can make and the target web application can support, etc. 
 - If a session ID with an entropy of `64 bits` is used, it will take an attacker at least 292 years to successfully guess a valid session ID, assuming the attacker can try 10,000 guesses per second with 100,000 valid simultaneous sessions available in the web application.
-- More information [here](https://www.owasp.org/index.php/Insufficient_Session-ID_Length).
+- More information [here](https://owasp.org/www-community/vulnerabilities/Insufficient_Session-ID_Length).
 
 ## Session ID Content (or Value)
 
@@ -94,21 +94,21 @@ A web application should make use of cookies for session ID exchange management.
 
 ## Transport Layer Security
 
-In order to protect the session ID exchange from active eavesdropping and passive disclosure in the network traffic, it is mandatory to use an encrypted HTTPS (SSL/TLS) connection for the entire web session, not only for the authentication process where the user credentials are exchanged.
+In order to protect the session ID exchange from active eavesdropping and passive disclosure in the network traffic, it is essential to use an encrypted HTTPS (TLS) connection for the entire web session, not only for the authentication process where the user credentials are exchanged.
 
-Additionally, the [`Secure` cookie attribute](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Secure_and_HttpOnly_cookies) must be used to ensure the session ID is only exchanged through an encrypted channel. The usage of an encrypted communication channel also protects the session against some session fixation attacks where the attacker is able to intercept and manipulate the web traffic to inject (or fix) the session ID on the victims web browser (see [here](https://media.blackhat.com/bh-eu-11/Raul_Siles/BlackHat_EU_2011_Siles_SAP_Session-Slides.pdf) and [here](https://media.blackhat.com/bh-eu-11/Raul_Siles/BlackHat_EU_2011_Siles_SAP_Session-WP.pdf)).
+Additionally, the `Secure` [cookie attribute](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Secure_and_HttpOnly_cookies) must be used to ensure the session ID is only exchanged through an encrypted channel. The usage of an encrypted communication channel also protects the session against some session fixation attacks where the attacker is able to intercept and manipulate the web traffic to inject (or fix) the session ID on the victim's web browser (see [here](https://media.blackhat.com/bh-eu-11/Raul_Siles/BlackHat_EU_2011_Siles_SAP_Session-Slides.pdf) and [here](https://media.blackhat.com/bh-eu-11/Raul_Siles/BlackHat_EU_2011_Siles_SAP_Session-WP.pdf)).
 
-The following set of HTTPS (SSL/TLS) best practices are focused on protecting the session ID (specifically when cookies are used) and helping with the integration of HTTPS within the web application:
+The following set of best practices are focused on protecting the session ID (specifically when cookies are used) and helping with the integration of HTTPS within the web application:
 
-- Web applications should never switch a given session from HTTP to HTTPS, or viceversa, as this will disclose the session ID in the clear through the network.
-- Web applications should not mix encrypted and unencrypted contents (HTML pages, images, CSS, Javascript files, etc) on the same host (or even domain - see the [`domain` cookie attribute](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#Directives)), as the request of any web object over an unencrypted channel might disclose the session ID.
-- Web applications, in general, should not offer public unencrypted contents and private encrypted contents from the same host. It is recommended to instead use two different hosts, such as www.example.com over HTTP (unencrypted) for the public contents, and secure.example.com over HTTPS (encrypted) for the private and sensitive contents (where sessions exist). The former host only has port TCP/80 open, while the later only has port TCP/443 open.
-- Web applications should avoid the extremely common HTTP to HTTPS redirection on the home page (using a 30x HTTP response), as this single unprotected HTTP request/response exchange can be used by an attacker to gather (or fix) a valid session ID.
-- Web applications should make use of [HTTP Strict Transport Security (HSTS)](https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#hsts) (previously called STS) to enforce HTTPS connections.
+- Do not switch a given session from HTTP to HTTPS, or vice-versa, as this will disclose the session ID in the clear through the network.
+  - When redirecting to HTTPS, ensure that the cookie is set or regenerated **after** the redirect has occurred.
+- Do not mix encrypted and unencrypted contents (HTML pages, images, CSS, JavaScript files, etc) in the same page, or from the same domain.
+- Where possible, avoid offering public unencrypted contents and private encrypted contents from the same host. Where insecure content is required, consider hosting this on a separate insecure domain.
+- Implement [HTTP Strict Transport Security (HSTS)](HTTP_Strict_Transport_Security_Cheat_Sheet.md) to enforce HTTPS connections.
 
-See the OWASP [Transport Layer Protection Cheat Sheet](Transport_Layer_Protection_Cheat_Sheet.md).
+See the OWASP [Transport Layer Protection Cheat Sheet](Transport_Layer_Protection_Cheat_Sheet.md) for more general guidance on implementing TLS securely.
 
-It is important to emphasize that SSL/TLS (HTTPS) does not protect against session ID prediction, brute force, client-side tampering or fixation. Yet, session ID disclosure and capture from the network traffic is one of the most prevalent attack vectors even today.
+It is important to emphasize that TLS does not protect against session ID prediction, brute force, client-side tampering or fixation; however, it does provide effective protection against an attacker intercepting or stealing session IDs through a man in the middle attack.
 
 # Cookies
 
@@ -158,10 +158,67 @@ Typically, session management capabilities to track users after authentication m
 
 - Ensure that sensitive information is not comprised, by ensuring that sensitive information is not persistent / encrypting / stored on a need basis for the duration of the need
 - Ensure that unauthorized activities cannot take place via cookie manipulation
-- Ensure secure flag is set to prevent accidental transmission over “the wire” in a non-secure manner
+- Ensure secure flag is set to prevent accidental transmission over "the wire" in a non-secure manner
 - Determine if all state transitions in the application code properly check for the cookies and enforce their use
 - Ensure entire cookie should be encrypted if sensitive data is persisted in the cookie
 - Define all cookies being used by the application, their name and why they are needed
+
+# HTML5 Web Storage API
+
+The Web Hypertext Application Technology Working Group (WHATWG) describes the HTML5 Web Storage APIs, `localStorage` and `sessionStorage`, as mechanisms for storing name-value pairs client-side.
+Unlike HTTP cookies, the contents of `localStorage` and `sessionStorage` are not automatically shared within requests or responses by the browser and are used for storing data client-side.
+
+## The localStorage API
+
+### Scope
+
+Data stored using the `localStorage` API is accessible by pages which are loaded from the same origin, which is defined as the scheme (`https:\\`), host (`example.com`), port (`443`) and domain/realm (`example.com`).
+This provides similar access to this data as would be achieved by using the `secure` flag on a cookie, meaning that data stored from `https` could not be retrieved via `http`. Due to potential concurrent access from separate windows/threads, data stored using `localStorage` may be susceptible to shared access issues (such as race-conditions) and should be considered non-locking ([Web Storage API Spec](https://html.spec.whatwg.org/multipage/webstorage.html#the-localstorage-attribute)). 
+
+### Duration
+
+Data stored using the `localStorage` API is persisted across browsing sessions, extending the timeframe in which it may be accessible to other system users. 
+
+### Offline Access
+
+The standards do not require `localStorage` data to be encrypted-at-rest, meaning it may be possible to directly access this data from disk.
+
+### Use Case
+
+WHATWG suggests the use of `localStorage` for data that needs to be accessed across windows or tabs, across multiple sessions, and where large (multi-megabyte) volumes of data may need to be stored for performance reasons.
+
+## The sessionStorage API
+
+### Scope
+
+The `sessionStorage` API stores data within the window context from which it was called, meaning that Tab 1 cannot access data which was stored from Tab 2.
+Also, like the `localStorage` API, data stored using the `sessionStorage` API is accessible by pages which are loaded from the same origin, which is defined as the scheme (`https:\\`), host (`example.com`), port (`443`) and domain/realm (`example.com`).
+This provides similar access to this data as would be achieved by using the `secure` flag on a cookie, meaning that data stored from `https` could not be retrieved via `http`.
+
+### Duration
+
+The `sessionStorage` API only stores data for the duration of the current browsing session. Once the tab is closed, that data is no longer retrievable. This does not necessarily prevent access, should a browser tab be reused or left open. Data may also persist in memory until a garbage collection event.
+
+### Offline Access
+
+The standards do not require `sessionStorage` data to be encrypted-at-rest, meaning it may be possible to directly access this data from disk.
+
+### Use Case
+
+WHATWG suggests the use of `sessionStorage` for data that is relevant for one-instance of a workflow, such as details for a ticket booking, but where multiple workflows could be performed in other tabs concurrently. The window/tab bound nature will keep the data from leaking between workflows in separate tabs.
+
+## Security Risks
+
+In general, secure or sensitive data should not be stored persistently in browser data stores as this may permit information leakage on shared systems. Because the Web Storage mechanisms are APIs, this also permits access from injected scripts, making it less secure than cookies with the `httponly` flag applied.
+While a case could be made for storing workflow specific data in `sessionStorage` for use by that specific tab/window across reloads, the Web Storage APIs should be treated as insecure storage. Because of this, if a business solution requires the use of the `localStorage` or `sessionStorage` to store sensitive data, such a solution should encipher data and apply replay protections.
+Due to the potential to access Web Storage APIs via an XSS attack, session identifiers should be stored using non-persistent cookies, with the appropriate flags to protect from [insecure access](Transport_Layer_Protection_Cheat_Sheet.md) (`Secure`), [XSS](Cross_Site_Scripting_Prevention_Cheat_Sheet.md) (`HttpOnly`) and [CSRF](Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.md) issues (`SameSite`).
+
+## References
+
+- [Web Storage APIs](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API)
+- [LocalStorage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+- [SessionStorage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
+- [WHATWG Web Storage Spec](https://html.spec.whatwg.org/multipage/webstorage.html#webstorage)
 
 # Session ID Life Cycle
 
@@ -215,7 +272,7 @@ In order to close and invalidate the session on the server side, it is mandatory
 
 All sessions should implement an idle or inactivity timeout. This timeout defines the amount of time a session will remain active in case there is no activity in the session, closing and invalidating the session upon the defined idle period since the last HTTP request received by the web application for a given session ID.
 
-The idle timeout limits the chances an attacker has to guess and use a valid session ID from another user. However, if the attacker is able to hijack a given session, the idle timeout does not limit the attacker’s actions, as he can generate activity on the session periodically to keep the session active for longer periods of time.
+The idle timeout limits the chances an attacker has to guess and use a valid session ID from another user. However, if the attacker is able to hijack a given session, the idle timeout does not limit the attacker's actions, as he can generate activity on the session periodically to keep the session active for longer periods of time.
 
 Session timeout management and expiration must be enforced server-side. If the client is used to enforce the session timeout, for example using the session token or other client parameters to track time references (e.g. number of minutes since login time), an attacker could manipulate these to extend the session duration.
 
@@ -287,7 +344,7 @@ Web applications must be able to detect both scenarios based on the number of at
 
 ## Detecting Session ID Anomalies
 
-Web applications should focus on detecting anomalies associated to the session ID, such as its manipulation. The OWASP [AppSensor Project](https://www.owasp.org/index.php/OWASP_AppSensor_Project) provides a framework and methodology to implement built-in intrusion detection capabilities within web applications focused on the detection of anomalies and unexpected behaviors, in the form of detection points and response actions. Instead of using external protection layers, sometimes the business logic details and advanced intelligence are only available from inside the web application, where it is possible to establish multiple session related detection points, such as when an existing cookie is modified or deleted, a new cookie is added, the session ID from another user is reused, or when the user location or User-Agent changes in the middle of a session.
+Web applications should focus on detecting anomalies associated to the session ID, such as its manipulation. The OWASP [AppSensor Project](https://owasp.org/www-project-appsensor/) provides a framework and methodology to implement built-in intrusion detection capabilities within web applications focused on the detection of anomalies and unexpected behaviors, in the form of detection points and response actions. Instead of using external protection layers, sometimes the business logic details and advanced intelligence are only available from inside the web application, where it is possible to establish multiple session related detection points, such as when an existing cookie is modified or deleted, a new cookie is added, the session ID from another user is reused, or when the user location or User-Agent changes in the middle of a session.
 
 ## Binding the Session ID to Other User Properties
 
@@ -323,8 +380,4 @@ Web Application Firewalls offer detection and protection capabilities against se
 
 On the other hand, more advanced capabilities can be implemented to allow the WAF to keep track of sessions, and the corresponding session IDs, and apply all kind of protections against session fixation (by renewing the session ID on the client-side when privilege changes are detected), enforcing sticky sessions (by verifying the relationship between the session ID and other client properties, like the IP address or User-Agent), or managing session expiration (by forcing both the client and the web application to finalize the session).
 
-The open-source ModSecurity WAF, plus the OWASP [Core Rule Set](https://www.owasp.org/index.php/Category:OWASP_ModSecurity_Core_Rule_Set_Project), provide capabilities to detect and apply security cookie attributes, countermeasures against session fixation attacks, and session tracking features to enforce sticky sessions.
-
-# Authors and Primary Editors
-
-Raul Siles (DinoSec) - raul@dinosec.com
+The open-source ModSecurity WAF, plus the OWASP [Core Rule Set](https://owasp.org/www-project-modsecurity-core-rule-set/), provide capabilities to detect and apply security cookie attributes, countermeasures against session fixation attacks, and session tracking features to enforce sticky sessions.

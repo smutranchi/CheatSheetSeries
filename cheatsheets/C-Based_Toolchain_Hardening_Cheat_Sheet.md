@@ -23,7 +23,7 @@ The remainder of this cheat sheet briefly explains the bulleted, actionable item
 
 You should support three build configurations. First is *Debug*, second is *Release*, and third is *Test*. One size does **not** fit all, and each speaks to a different facet of the engineering process. You will use a debug build while developing, your continuous integration or build server will use test configurations, and you will ship release builds.
 
-1970's K&R code and one size fits all flags are from a bygone era. Processes have evolved and matured to meet the challenges of a modern landscape, including threats. Because tools like Autconfig and Automake [do not support the notion of build configurations](https://lists.gnu.org/archive/html/automake/2012-12/msg00019.html), you should prefer to work in an Integrated Develop Environments (IDE) or write your makefiles so the desired targets are supported. In addition, Autconfig and Automake often ignore user supplied flags (it depends on the folks writing the various scripts and templates), so you might find it easier to again write a makefile from scratch rather than retrofitting existing auto tool files.
+1970's K&R code and one size fits all flags are from a bygone era. Processes have evolved and matured to meet the challenges of a modern landscape, including threats. Because tools like Autoconfig and Automake [do not support the notion of build configurations](https://lists.gnu.org/archive/html/automake/2012-12/msg00019.html), you should prefer to work in an Integrated Develop Environments (IDE) or write your makefiles so the desired targets are supported. In addition, Autoconfig and Automake often ignore user supplied flags (it depends on the folks writing the various scripts and templates), so you might find it easier to again write a makefile from scratch rather than retrofitting existing auto tool files.
 
 ## Debug Builds
 
@@ -45,7 +45,7 @@ A release configuration should also use `-O2`/`-O3`/`-Os` and `-g1`/`-g2`. The o
 
 Release builds should also consider the configuration pair of `-mfunction-return=thunk` and `-mindirect-branch=thunk`. These are the "Reptoline" fix which is an indirect branch used to thwart speculative execution CPU vulnerabilities such as Spectre and Meltdown. The CPU cannot tell what code to \[speculatively\] execute because it is an indirect (as opposed to a direct) branch. This is an extra layer of indirection, like calling a pointer through a pointer.
 
-`NDEBUG` will also remove asserts from your program by defining them to `void` since its not acceptable to crash via `abort` in production. You should not depend upon assert for crash report generation because those reports could contain sensitive information and may end up on foreign systems, including for example, [Windows Error Reporting](http://msdn.microsoft.com/en-us/library/windows/hardware/gg487440.aspx). If you want a crash dump, you should generate it yourself in a controlled manner while ensuring no sensitive information is written or leaked.
+`NDEBUG` will also remove asserts from your program by defining them to `void` since its not acceptable to crash via `abort` in production. You should not depend upon assert for crash report generation because those reports could contain sensitive information and may end up on foreign systems. If you want a crash dump, you should generate it yourself in a controlled manner while ensuring no sensitive information is written or leaked.
 
 Release builds should also curtail logging. If you followed earlier guidance, you have properly instrumented code and can determine the point of first failure quickly and easily. Simply log the failure and and relevant parameters. Remove all `NSLog` and similar calls because sensitive information might be logged to a system logger. Worse, the data in the logs might be egressed by backup or sync. If your default configuration includes a logging level of ten or *maximum verbosity*, you probably lack stability and are trying to track problems in the field. That usually means your program or library is not ready for production.
 
@@ -64,7 +64,7 @@ You should also concentrate on negative tests. Positive self tests are relativel
 
 # Library Integration
 
-You must properly integrate and utilize libraries in your program. Proper integration includes acceptance testing, configuring for your build system, identifying libraries you *should* be using, and correctly using the libraries. A well integrated library can compliment your code, and a poorlly written library can detract from your program. Because a stable library with required functionality can be elusive and its tricky to integrate libraries, you should try to minimize dependencies and avoid thrid party libraries whenever possible.
+You must properly integrate and utilize libraries in your program. Proper integration includes acceptance testing, configuring for your build system, identifying libraries you *should* be using, and correctly using the libraries. A well integrated library can compliment your code, and a poorly written library can detract from your program. Because a stable library with required functionality can be elusive and its tricky to integrate libraries, you should try to minimize dependencies and avoid third party libraries whenever possible.
 
 Acceptance testing a library is practically non-existent. The testing can be a simple code review or can include additional measures, such as negative self tests. If the library is defective or does not meet standards, you must fix it or reject the library. An example of lack of acceptance testing is [Adobe's inclusion of a defective Sablotron library](http://www.agarri.fr/blog/index.html), which resulted in [CVE-2012-1525](http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2012-1525). Another example is the 10's to 100's of millions of vulnerable embedded devices due to defects in `libupnp`. While its popular to lay blame on others, the bottom line is you chose the library so you are responsible for it.
 
@@ -82,9 +82,9 @@ You should consider a clean compile as a security gate. If you find its painful 
 
 When compiling programs with GCC, you should use the following flags to help detect errors in your programs. The options should be added to `CFLAGS` for a program with C source files, and `CXXFLAGS` for a program with C++ source files. Objective C developers should add their warnings to `CFLAGS`: `-Wall` `-Wextra` `-Wconversion` `(or` `-Wsign-conversion),` `-Wcast-align,` `-Wformat=2` `-Wformat-security,` `-fno-common,` `-Wmissing-prototypes,` `-Wmissing-declarations,` `-Wstrict-prototypes,` `-Wstrict-overflow,` `and` `-Wtrampolines`. C++ presents additional opportunities under GCC, and the flags include `-Woverloaded-virtual,` `-Wreorder,` `-Wsign-promo,` `-Wnon-virtual-dtor` and possibly `-Weffc++`. Finally, Objective C should include `-Wstrict-selector-match` and `-Wundeclared-selector`.
 
-For a Microsoft platform, you should use: `/W4`, `/Wall`, and `/analyze`. If you don't use `/Wall`, Microsoft recomends using `/W4` and enabling C4191, C4242, C4263, C4264, C4265, C4266, C4302, C4826, C4905, C4906, and C4928. Finally, `/analyze` is Enterprise Code Analysis, which is freely available with the [Windows SDK for Windows Server 2008 and .NET Framework 3.5 SDK](https://www.microsoft.com/en-us/download/details.aspx?id=21) (you don't need Visual Studio Enterprise edition).
+For a Microsoft platform, you should use: `/W4`, `/Wall`, and `/analyze`. If you don't use `/Wall`, Microsoft recommends using `/W4` and enabling C4191, C4242, C4263, C4264, C4265, C4266, C4302, C4826, C4905, C4906, and C4928. Finally, `/analyze` is Enterprise Code Analysis, which is freely available with the [Windows SDK for Windows Server 2008 and .NET Framework 3.5 SDK](https://www.microsoft.com/en-us/download/details.aspx?id=21) (you don't need Visual Studio Enterprise edition).
 
-For additional details on the GCC and Windows options and flags, see *[GCC Options to Request or Suppress Warnings](http://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html)*, *[“Off By Default” Compiler Warnings in Visual C++](http://blogs.msdn.com/b/vcblog/archive/2010/12/14/off-by-default-compiler-warnings-in-visual-c.aspx)*, and *[Protecting Your Code with Visual C++ Defenses](http://msdn.microsoft.com/en-us/magazine/cc337897.aspx)*.
+For additional details on the GCC and Windows options and flags, see *[GCC Options to Request or Suppress Warnings](http://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html)*, *["Off By Default" Compiler Warnings in Visual C++](http://blogs.msdn.com/b/vcblog/archive/2010/12/14/off-by-default-compiler-warnings-in-visual-c.aspx)*, and *[Protecting Your Code with Visual C++ Defenses](http://msdn.microsoft.com/en-us/magazine/cc337897.aspx)*.
 
 # Platform Security
 
@@ -95,9 +95,3 @@ When integrating with platform security on a Linux host, you should use the foll
 Windows programs should include `/dynamicbase`, `/NXCOMPAT`, `/GS`, and `/SafeSEH` to ensure address space layout randomizations (ASLR), data execution prevention (DEP), use of stack cookies, and thwart exception handler overwrites.
 
 For additional details on the GCC and Windows options and flags, see *[GCC Options Summary](http://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html)* and *[Protecting Your Code with Visual C++ Defenses](http://msdn.microsoft.com/en-us/magazine/cc337897.aspx)*.
-
-# Authors and Primary Editors
-
-- Jeffrey Walton - jeffrey@owasp.org
-- Jim Manico - jim@owasp.org
-- Kevin Wall - kevin@owasp.org

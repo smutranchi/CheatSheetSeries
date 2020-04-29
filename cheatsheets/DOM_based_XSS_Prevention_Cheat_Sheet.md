@@ -1,8 +1,8 @@
 # Introduction
 
-When looking at XSS (Cross-Site Scripting), there are three generally recognized forms of [XSS](https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)):
-* [Reflected or Stored](https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)#Stored_and_Reflected_XSS_Attacks)
-* [DOM Based XSS](https://www.owasp.org/index.php/DOM_Based_XSS). 
+When looking at XSS (Cross-Site Scripting), there are three generally recognized forms of [XSS](https://owasp.org/www-community/attacks/xss/):
+* [Reflected or Stored](https://owasp.org/www-community/attacks/xss/#stored-and-reflected-xss-attacks)
+* [DOM Based XSS](https://owasp.org/www-community/attacks/DOM_Based_XSS). 
 
 The [XSS Prevention Cheatsheet](Cross_Site_Scripting_Prevention_Cheat_Sheet.md) does an excellent job of addressing Reflected and Stored XSS. This cheatsheet addresses DOM (Document Object Model) based XSS and is an extension (and assumes comprehension of) the [XSS Prevention Cheatsheet](Cross_Site_Scripting_Prevention_Cheat_Sheet.md).
 
@@ -34,7 +34,7 @@ The following is an example vulnerability which occurs in the JavaScript context
  </script>
 ```
 
-Let’s look at the individual subcontexts of the execution context in turn.
+Let's look at the individual subcontexts of the execution context in turn.
 
 # RULE \#1 - HTML Escape then JavaScript Escape Before Inserting Untrusted Data into HTML Subcontext within the Execution Context
 
@@ -95,7 +95,7 @@ For example, the general rule is to HTML Attribute encode untrusted data (data f
  form1.appendChild(x);
 ```
 
-The problem is that if companyName had the value “Johnson & Johnson”. What would be displayed in the input text field would be “Johnson & Johnson”. The appropriate encoding to use in the above case would be only JavaScript encoding to disallow an attacker from closing out the single quotes and in-lining code, or escaping to HTML and opening a new script tag.
+The problem is that if companyName had the value "Johnson & Johnson". What would be displayed in the input text field would be "Johnson & Johnson". The appropriate encoding to use in the above case would be only JavaScript encoding to disallow an attacker from closing out the single quotes and in-lining code, or escaping to HTML and opening a new script tag.
 
 ## SAFE and FUNCTIONALLY CORRECT example
 
@@ -195,7 +195,7 @@ Because JavaScript is based on an international standard (ECMAScript), JavaScrip
 
 However the opposite is the case with HTML encoding. HTML tag elements are well defined and do not support alternate representations of the same tag. So HTML encoding cannot be used to allow the developer to have alternate representations of the `<a>` tag for example.
 
-## HTML Encoding’s Disarming Nature
+## HTML Encoding's Disarming Nature
 
 In general, HTML encoding serves to castrate HTML tags which are placed in HTML and HTML attribute contexts. Working example (no HTML encoding):
 
@@ -215,7 +215,7 @@ HTML encoded example to highlight a fundamental difference with JavaScript encod
 <&#x61; href=...>
 ```
 
-If HTML encoding followed the same semantics as JavaScript encoding. The line above could have possibily worked to render a link. This difference makes JavaScript encoding a less viable weapon in our fight against XSS.
+If HTML encoding followed the same semantics as JavaScript encoding. The line above could have possibly worked to render a link. This difference makes JavaScript encoding a less viable weapon in our fight against XSS.
 
 # RULE \#4 - JavaScript Escape Before Inserting Untrusted Data into the CSS Attribute Subcontext within the Execution Context
 
@@ -255,9 +255,9 @@ element.textContent = untrustedData;  //does not execute code
 
 # RULE \#7 - Fixing DOM Cross-site Scripting Vulnerabilities
 
-The best way to fix DOM based cross-site scripting is to use the right output method (sink). For example if you want to use user input to write in a `div tag` element don’t use `innerHtml`, instead use `innerText` or `textContent`. This will solve the problem, and it is the right way to re-mediate DOM based XSS vulnerabilities.
+The best way to fix DOM based cross-site scripting is to use the right output method (sink). For example if you want to use user input to write in a `div tag` element don't use `innerHtml`, instead use `innerText` or `textContent`. This will solve the problem, and it is the right way to re-mediate DOM based XSS vulnerabilities.
 
-**It is always a bad idea to use a user-controlled input in dangerous sources such as eval. 99% of the time it is an indication of bad or lazy programming practice, so simply don’t do it instead of trying to sanitize the input.**
+**It is always a bad idea to use a user-controlled input in dangerous sources such as eval. 99% of the time it is an indication of bad or lazy programming practice, so simply don't do it instead of trying to sanitize the input.**
 
 Finally, to fix the problem in our initial code, instead of trying to encode the output correctly which is a hassle and can easily go wrong we would simply use `element.textContent` to write it in a content like this:
 
@@ -281,7 +281,7 @@ The guidelines below are an attempt to provide guidelines for developers when de
 
 Avoid treating untrusted data as code or markup within JavaScript code.
 
-## GUIDELINE \#2 - Always JavaScript encode and delimit untrusted data as quoted strings when entering the application when building templated Javascript
+## GUIDELINE \#2 - Always JavaScript encode and delimit untrusted data as quoted strings when entering the application when building templated JavaScript
 
 Always JavaScript encode and delimit untrusted data as quoted strings when entering the application as illustrated in the following example.
 
@@ -364,7 +364,7 @@ If **A** is double JavaScript encoded then the following **if** check will retur
 
 This brings up an interesting design point. Ideally, the correct way to apply encoding and avoid the problem stated above is to server-side encode for the output context where data is introduced into the application. 
 
-Then client-side encode (using a JavaScript encoding library such as [ESAPI4JS](https://www.owasp.org/index.php/ESAPI_JavaScript_Readme)) for the individual subcontext (DOM methods) which untrusted data is passed to. [ESAPI4JS](https://www.owasp.org/index.php/ESAPI_JavaScript_Readme) and [jQuery Encoder](https://github.com/chrisisbeef/jquery-encoder/blob/master/src/jquery.jquery-encoder.js) are two client side encoding libraries developed by Chris Schmidt.
+Then client-side encode (using a JavaScript encoding library such as [ESAPI4JS](https://owasp.org/www-project-enterprise-security-api/)) for the individual subcontext (DOM methods) which untrusted data is passed to. [ESAPI4JS](https://owasp.org/www-project-enterprise-security-api/) and [jQuery Encoder](https://github.com/chrisisbeef/jquery-encoder/blob/master/src/jquery.jquery-encoder.js) are two client side encoding libraries developed by Chris Schmidt.
 
 Here are some examples of how they are used:
 
@@ -446,15 +446,15 @@ Although the developer writing the code above was trying to add additional keyed
 
 Run your JavaScript in a ECMAScript 5 [canopy](https://github.com/jcoglan/canopy) or sandbox to make it harder for your JavaScript API to be compromised (Gareth Heyes and John Stevens).
 
-## GUIDELINE \#10 - Don’t eval() JSON to convert it to native JavaScript objects
+## GUIDELINE \#10 - Don't eval() JSON to convert it to native JavaScript objects
 
-Don’t `eval()` JSON to convert it to native JavaScript objects. Instead use `JSON.toJSON()` and `JSON.parse()` (Chris Schmidt).
+Don't `eval()` JSON to convert it to native JavaScript objects. Instead use `JSON.toJSON()` and `JSON.parse()` (Chris Schmidt).
 
 # Common Problems Associated with Mitigating DOM Based XSS
 
 ## Complex Contexts
 
-In many cases the context isn’t always straightforward to discern.
+In many cases the context isn't always straightforward to discern.
 
 ```html
 <a href="javascript:myFunction('<%=untrustedData%>', 'test');">Click Me</a>
@@ -494,13 +494,13 @@ Function myFunction (url,name) {
 
 There are a number of open source encoding libraries out there:
 
-1. OWASP [ESAPI](https://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API)
-2. OWASP [Java Encoder](https://www.owasp.org/index.php/OWASP_Java_Encoder_Project)
+1. OWASP [ESAPI](https://owasp.org/www-project-enterprise-security-api/)
+2. OWASP [Java Encoder](https://owasp.org/www-project-java-encoder/)
 3. Apache Commons Text [StringEscapeUtils](https://commons.apache.org/proper/commons-text/javadocs/api-release/org/apache/commons/text/StringEscapeUtils.html), replace one from [Apache Commons Lang3](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/StringEscapeUtils.html)
 4. [Jtidy](http://jtidy.sourceforge.net/)
-5. Your company’s custom implementation.
+5. Your company's custom implementation.
 
-Some work on a black list while others ignore important characters like “&lt;” and “&gt;”. 
+Some work on a black list while others ignore important characters like "&lt;" and "&gt;". 
 
 Java Encoder is an active project providing supports for HTML, CSS and JavaScript encoding.
 
@@ -522,9 +522,9 @@ For example:
 </script>
 ```
 
-The HTML encoded value above is still executable. If that isn’t enough to keep in mind, you have to remember that encodings are lost when you retrieve them using the value attribute of a DOM element.
+The HTML encoded value above is still executable. If that isn't enough to keep in mind, you have to remember that encodings are lost when you retrieve them using the value attribute of a DOM element.
 
-Let’s look at the sample page and script:
+Let's look at the sample page and script:
 
 ```html
 <form name="myForm" ...>
@@ -553,35 +553,3 @@ Some papers or guides advocate its use as an alternative to `innerHTML` to mitig
 ```
 
 The `innerText` feature was originally introduced by Internet Explorer, and was formally specified in the HTML standard in 2016 after being adopted by all major browser vendors.
-
-# Authors and Contributing Editors
-
-Jim Manico - jim@owasp.org
-
-Abraham Kang - abraham.kang@owasp.org
-
-Gareth (Gaz) Heyes
-
-Stefano Di Paola
-
-Achim Hoffmann - achim@owasp.org
-
-Robert (RSnake) Hansen
-
-Mario Heiderich
-
-John Steven
-
-Chris (Chris BEEF) Schmidt
-
-Mike Samuel
-
-Jeremy Long
-
-Dhiraj Mishra - mishra.dhiraj@owasp.org
-
-Eduardo (SirDarkCat) Alberto Vela Nava
-
-Jeff Williams - jeff.williams@owasp.org
-
-Erlend Oftedal

@@ -13,7 +13,7 @@ when typed in a Windows command prompt, the application *Calculator* is displaye
 However, if the supplied value has been tempered with, and now it is:
 
 ``` shell
-calc & echo “test”
+calc & echo "test"
 ```
 
 When execute, it changes the meaning of the initial intended value. 
@@ -30,7 +30,7 @@ The problem is exacerbated if the compromised process does not follow the princi
 
 The primary defense is to avoid calling OS commands directly. Built-in library functions are a very good alternative to OS Commands, and they cannot be manipulated to perform tasks other than those it is intended to do.
 
-For example use `mkdir()` instead of `system(“mkdir /dir_name”)`.
+For example use `mkdir()` instead of `system("mkdir /dir_name")`.
 
 If there are available libraries or APIs for the language you used, this is the preferred method.
 
@@ -38,15 +38,15 @@ If there are available libraries or APIs for the language you used, this is the 
 
 **TODO: To enhance.**
 
-For examples, see [escapeshellarg()](http://php.net/manual/en/function.escapeshellarg.php) or [escapeshellcmd()](http://php.net/manual/en/function.escapeshellcmd.php) in PHP.
+For examples, see [escapeshellarg()](https://www.php.net/manual/en/function.escapeshellarg.php) or [escapeshellcmd()](https://www.php.net/manual/en/function.escapeshellcmd.php) in PHP.
 
-## Defense option 3: Parametrization in conjunction with Input Validation
+## Defense option 3: Parameterization in conjunction with Input Validation
 
 If it is considered unavoidable the call to a system command incorporated with user-supplied, the following two layers of defense should be used within software in order to prevent attacks
 
 ### Layer 1
 
-**Parametrization:** If available, use structured mechanisms that automatically enforce the separation between data and command. These mechanisms can help to provide the relevant quoting, encoding.
+**Parameterization:** If available, use structured mechanisms that automatically enforce the separation between data and command. These mechanisms can help to provide the relevant quoting, encoding.
 
 ### Layer 2
 
@@ -198,13 +198,13 @@ process.Start();
 
 ## PHP
 
-In PHP use [escapeshellarg()](http://php.net/manual/en/function.escapeshellarg.php) or [escapeshellcmd()](http://php.net/manual/en/function.escapeshellcmd.php) rather than [exec()](http://php.net/manual/en/function.exec.php), [system()](http://php.net/manual/en/function.system.php), [passthru()](http://php.net/manual/en/function.passthru.php).
+In PHP use [escapeshellarg()](https://www.php.net/manual/en/function.escapeshellarg.php) or [escapeshellcmd()](https://www.php.net/manual/en/function.escapeshellcmd.php) rather than [exec()](https://www.php.net/manual/en/function.exec.php), [system()](https://www.php.net/manual/en/function.system.php), [passthru()](https://www.php.net/manual/en/function.passthru.php).
 
 # Related articles
 
 ## Description of Command Injection Vulnerability
 
-- OWASP [Command Injection](https://www.owasp.org/index.php/Command_Injection).
+- OWASP [Command Injection](https://owasp.org/www-community/attacks/Command_Injection).
 
 ## How to Avoid Vulnerabilities
 
@@ -212,18 +212,12 @@ In PHP use [escapeshellarg()](http://php.net/manual/en/function.escapeshellarg.p
 
 ## How to Review Code
 
-- OWASP [Reviewing Code for OS Injection](https://www.owasp.org/index.php/Reviewing_Code_for_OS_Injection).
+- OWASP [Reviewing Code for OS Injection](https://wiki.owasp.org/index.php/Reviewing_Code_for_OS_Injection).
 
 ## How to Test
 
-- [OWASP Testing Guide](https://www.owasp.org/index.php/OWASP_Testing_Project) article on [Testing for Command Injection](https://www.owasp.org/index.php/Testing_for_Command_Injection_(OTG-INPVAL-013)).
+- [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) article on [Testing for Command Injection](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/07-Input_Validation_Testing/12-Testing_for_Command_Injection.html).
 
 ## External References
 
 - [CWE Entry 77 on Command Injection](https://cwe.mitre.org/data/definitions/77.html).
-
-# Authors and Primary Editors
-
-Katy Anton - katy.anton@owasp.org
-
-Jim Manico - jim.manico@owasp.org

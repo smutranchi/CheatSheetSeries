@@ -1,11 +1,11 @@
 # Introduction
 
-This article is focused on providing clear, simple, actionable guidance for preventing SQL Injection flaws in your applications. [SQL Injection](https://www.owasp.org/index.php/SQL_Injection) attacks are unfortunately very common, and this is due to two factors:
+This article is focused on providing clear, simple, actionable guidance for preventing SQL Injection flaws in your applications. [SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection) attacks are unfortunately very common, and this is due to two factors:
 
 1.  the significant prevalence of SQL Injection vulnerabilities, and
 2.  the attractiveness of the target (i.e., the database typically contains all the interesting/critical data for your application).
 
-It’s somewhat shameful that there are so many successful SQL Injection attacks occurring, because it is EXTREMELY simple to avoid SQL Injection vulnerabilities in your code.
+It's somewhat shameful that there are so many successful SQL Injection attacks occurring, because it is EXTREMELY simple to avoid SQL Injection vulnerabilities in your code.
 
 SQL Injection flaws are introduced when software developers create dynamic database queries that include user supplied input. To avoid SQL injection flaws is simple. Developers need to either: a) stop writing dynamic queries; and/or b) prevent user supplied input which contains malicious SQL from affecting the logic of the executed query.
 
@@ -15,13 +15,13 @@ This article provides a set of simple techniques for preventing SQL Injection vu
 
 - **Option 1: Use of Prepared Statements (with Parameterized Queries)**
 - **Option 2: Use of Stored Procedures**
-- **Option 3: White List Input Validation**
+- **Option 3: Whitelist Input Validation**
 - **Option 4: Escaping All User Supplied Input**
 
 **Additional Defenses:**
 
 - **Also: Enforcing Least Privilege**
-- **Also: Performing White List Input Validation as a Secondary Defense**
+- **Also: Performing Whitelist Input Validation as a Secondary Defense**
 
 **Unsafe Example:**
 
@@ -132,7 +132,7 @@ try {
 
 **Safe VB .NET Stored Procedure Example**
 
-The following code example uses a `SqlCommand`, .NET’s implementation of the stored procedure interface, to execute the same database query. The `sp_getAccountBalance` stored procedure would have to be predefined in the database and implement the same functionality as the query defined above.
+The following code example uses a `SqlCommand`, .NET's implementation of the stored procedure interface, to execute the same database query. The `sp_getAccountBalance` stored procedure would have to be predefined in the database and implement the same functionality as the query defined above.
 
 ```vbnet
  Try
@@ -146,11 +146,11 @@ The following code example uses a `SqlCommand`, .NET’s implementation of the s
  End Try
 ```
 
-## Defense Option 3: White List Input Validation
+## Defense Option 3: Whitelist Input Validation
 
 Various parts of SQL queries aren't legal locations for the use of bind variables, such as the names of tables or columns, and the sort order indicator (ASC or DESC). In such situations, input validation or query redesign is the most appropriate defense. For the names of tables or columns, ideally those values come from the code, and not from user parameters. 
 
-But if user parameter values are used to make different for table names and column names, then the parameter values should be mapped to the legal/expected table or column names to make sure unvalidated user input doesn't end up in the query. Please note, this is a symptom of poor design and a full re-write should be considered if time allows. 
+But if user parameter values are used for targeting different table names and column names, then the parameter values should be mapped to the legal/expected table or column names to make sure unvalidated user input doesn't end up in the query. Please note, this is a symptom of poor design and a full re-write should be considered if time allows. 
 
 Here is an example of table name validation.
 
@@ -180,7 +180,7 @@ public String someMethod(boolean sortOrder) {
 
 Any time user input can be converted to a non-String, like a date, numeric, boolean, enumerated type, etc. before it is appended to a query, or used to select a value to append to the query, this ensures it is safe to do so.
 
-Input validation is also recommended as a secondary defense in ALL cases, even when using bind variables as is discussed later in this article. More techniques on how to implement strong white list input validation is described in the [Input Validation Cheat Sheet](Input_Validation_Cheat_Sheet.md).
+Input validation is also recommended as a secondary defense in ALL cases, even when using bind variables as is discussed later in this article. More techniques on how to implement strong whitelist input validation is described in the [Input Validation Cheat Sheet](Input_Validation_Cheat_Sheet.md).
 
 ## Defense Option 4: Escaping All User-Supplied Input
 
@@ -192,7 +192,7 @@ This technique works like this. Each DBMS supports one or more character escapin
 
 The OWASP Enterprise Security API (ESAPI) is a free, open source, web application security control library that makes it easier for programmers to write lower-risk applications. The ESAPI libraries are designed to make it easier for programmers to retrofit security into existing applications. The ESAPI libraries also serve as a solid foundation for new development:
 
-- Full details on [ESAPI are available here on OWASP](https://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API).
+- Full details on [ESAPI are available here on OWASP](https://owasp.org/www-project-enterprise-security-api/).
 - The javadoc for [ESAPI 2.x (Legacy) is available](http://www.javadoc.io/doc/org.owasp.esapi/esapi/2.1.0). This code was migrated to GitHub in November 2014.
 - [The legacy ESAPI for Java at GitHub](https://github.com/ESAPI/esapi-java-legacy) helps understand existing use of it when Javadoc seems insufficient.
 - [An attempt at another ESAPI for Java GitHub](https://github.com/ESAPI/esapi-java) has other approaches and no tests or concrete codecs.
@@ -321,13 +321,13 @@ This information is based on the [MySQL Escape character information](https://de
 
 #### SQL Server Escaping
 
-We have not implemented the SQL Server escaping routine yet, but the following has good pointers and links to articles describing how to prevent SQL injection attacks on SQL server, see [here](https://blogs.msdn.microsoft.com/raulga/2007/01/04/dynamic-sql-sql-injection/).
+We have not implemented the SQL Server escaping routine yet, but the following has good pointers and links to articles describing how to prevent SQL injection attacks on SQL server, see [here](https://aka.ms/sql-injection).
 
 #### DB2 Escaping
 
-This information is based on [DB2 WebQuery special characters](https://www-01.ibm.com/support/docview.wss?uid=nas8N1013655) as well as some information from [Oracle's JDBC DB2 driver](http://docs.oracle.com/cd/E12840_01/wls/docs103/jdbc_drivers/sqlescape.html).
+This information is based on [DB2 WebQuery special characters](https://www.ibm.com/support/pages/web-query-special-characters) as well as some information from [Oracle's JDBC DB2 driver](http://docs.oracle.com/cd/E12840_01/wls/docs103/jdbc_drivers/sqlescape.html).
 
-Information in regards to differences between several [DB2 Universal drivers](http://www-01.ibm.com/support/docview.wss?uid=swg21363866).
+Information in regards to differences between several [DB2 Universal drivers](https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads).
 
 ### Hex-encoding all input
 
@@ -354,7 +354,7 @@ If an attacker were to transmit a string containing a single-quote character fol
 Use prepared statements and parameterized queries. These are SQL statements that are sent to and parsed by the database server separately from any parameters. This way it is impossible for an attacker to inject malicious SQL.
 
 You basically have two options to achieve this:
-1. Using [PDO](http://php.net/manual/en/book.pdo.php) (for any supported database driver):
+1. Using [PDO](https://www.php.net/manual/en/book.pdo.php) (for any supported database driver):
 
 ```php
 $stmt = $pdo->prepare('SELECT * FROM employees WHERE name = :name');
@@ -364,7 +364,7 @@ foreach ($stmt as $row) {
 }
 ```
 
-2. Using [MySQLi](http://php.net/manual/en/book.mysqli.php) (for MySQL):
+2. Using [MySQLi](https://www.php.net/manual/en/book.mysqli.php) (for MySQL):
 
 ```php
 $stmt = $dbConnection->prepare('SELECT * FROM employees WHERE name = ?');
@@ -383,17 +383,17 @@ PDO is the universal option. If you're connecting to a database other than MySQL
 Beyond adopting one of the four primary defenses, we also recommend adopting all of these additional defenses in order to provide defense in depth. These additional defenses are:
 
 - **Least Privilege**
-- **White List Input Validation**
+- **Whitelist Input Validation**
 
 ## Least Privilege
 
-To minimize the potential damage of a successful SQL injection attack, you should minimize the privileges assigned to every database account in your environment. Do not assign DBA or admin type access rights to your application accounts. We understand that this is easy, and everything just ‘works’ when you do it this way, but it is very dangerous. 
+To minimize the potential damage of a successful SQL injection attack, you should minimize the privileges assigned to every database account in your environment. Do not assign DBA or admin type access rights to your application accounts. We understand that this is easy, and everything just 'works' when you do it this way, but it is very dangerous. 
 
 Start from the ground up to determine what access rights your application accounts require, rather than trying to figure out what access rights you need to take away. Make sure that accounts that only need read access are only granted read access to the tables they need access to. 
 
 If an account only needs access to portions of a table, consider creating a view that limits access to that portion of the data and assigning the account access to the view instead, rather than the underlying table. Rarely, if ever, grant create or delete access to database accounts.
 
-If you adopt a policy where you use stored procedures everywhere, and don’t allow application accounts to directly execute their own queries, then restrict those accounts to only be able to execute the stored procedures they need. Don’t grant them any rights directly to the tables in the database.
+If you adopt a policy where you use stored procedures everywhere, and don't allow application accounts to directly execute their own queries, then restrict those accounts to only be able to execute the stored procedures they need. Don't grant them any rights directly to the tables in the database.
 
 SQL injection is not the only threat to your database data. Attackers can simply change the parameter values from one of the legal values they are presented with, to a value that is unauthorized for them, but the application itself might be authorized to access. As such, minimizing the privileges granted to your application will reduce the likelihood of such unauthorized access attempts, even when an attacker is not trying to use SQL injection as part of their exploit.
 
@@ -413,7 +413,7 @@ You can use SQL views to further increase the granularity of access by limiting 
 
 The designer could use views to compensate for this limitation; revoke all access to the table (from all DB users except the owner/admin) and create a view that outputs the hash of the password field and not the field itself. Any SQL injection attack that succeeds in stealing DB information will be restricted to stealing the hash of the passwords (could even be a keyed hash), since no DB user for any of the web applications has access to the table itself.
 
-## White List Input Validation
+## Whitelist Input Validation
 
 In addition to being a primary defense when nothing else is possible (e.g., when a bind variable isn't legal), input validation can also be a secondary defense used to detect unauthorized input before it is passed to the SQL query. For more information please see the [Input Validation Cheat Sheet](Input_Validation_Cheat_Sheet.md). Proceed with caution here. Validated data is not necessarily safe to insert into SQL queries via string building.
 
@@ -424,33 +424,23 @@ In addition to being a primary defense when nothing else is possible (e.g., when
 The following articles describe how to exploit different kinds of SQL Injection Vulnerabilities on various platforms that this article was created to help you avoid:
 
 - [SQL Injection Cheat Sheet](https://www.netsparker.com/blog/web-security/sql-injection-cheat-sheet/)
-- Bypassing WAF's with SQLi - [SQL Injection Bypassing WAF](https://www.owasp.org/index.php/SQL_Injection_Bypassing_WAF)
+- Bypassing WAF's with SQLi - [SQL Injection Bypassing WAF](https://owasp.org/www-community/attacks/SQL_Injection_Bypassing_WAF)
 
 **Description of SQL Injection Vulnerabilities**
 
-- OWASP article on [SQL Injection](https://www.owasp.org/index.php/SQL_Injection) Vulnerabilities
-- OWASP article on [Blind_SQL_Injection](https://www.owasp.org/index.php/Blind_SQL_Injection) Vulnerabilities
+- OWASP article on [SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection) Vulnerabilities
+- OWASP article on [Blind_SQL_Injection](https://owasp.org/www-community/attacks/Blind_SQL_Injection) Vulnerabilities
 
 **How to Avoid SQL Injection Vulnerabilities**
 
-- [OWASP Developers Guide](https://www.owasp.org/index.php/:Category:OWASP_Guide_Project) article on how to avoid SQL injection vulnerabilities
+- [OWASP Developers Guide](https://github.com/OWASP/DevGuide) article on how to avoid SQL injection vulnerabilities
 - OWASP Cheat Sheet that provides [numerous language specific examples of parameterized queries using both Prepared Statements and Stored Procedures](Query_Parameterization_Cheat_Sheet.md)
 - [The Bobby Tables site (inspired by the XKCD webcomic) has numerous examples in different languages of parameterized Prepared Statements and Stored Procedures](http://bobby-tables.com/)
 
 **How to Review Code for SQL Injection Vulnerabilities**
 
-- [OWASP Code Review Guide](https://www.owasp.org/index.php/Category:OWASP_Code_Review_Project) article on how to [Review Code for SQL Injection](https://www.owasp.org/index.php/Reviewing_Code_for_SQL_Injection) Vulnerabilities
+- [OWASP Code Review Guide](https://wiki.owasp.org/index.php/Category:OWASP_Code_Review_Project) article on how to [Review Code for SQL Injection](https://wiki.owasp.org/index.php/Reviewing_Code_for_SQL_Injection) Vulnerabilities
 
 **How to Test for SQL Injection Vulnerabilities**
 
-- [OWASP Testing Guide](https://www.owasp.org/index.php/:Category:OWASP_Testing_Project) article on how to [Test for SQL Injection](https://www.owasp.org/index.php/Testing_for_SQL_Injection_(OWASP-DV-005)) Vulnerabilities
-
-# Authors and Primary Editors
-
-Dave Wichers - dave.wichers@owasp.org
-
-Jim Manico - jim@owasp.org
-
-Matt Seil - mseil@acm.org
-
-Dhiraj Mishra - mishra.dhiraj@owasp.org
+- [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide) article on how to [Test for SQL Injection](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection.html) Vulnerabilities

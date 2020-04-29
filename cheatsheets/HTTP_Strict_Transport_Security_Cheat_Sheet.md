@@ -30,7 +30,7 @@ This example is useful if all present and future subdomains will be HTTPS. In th
 `Strict-Transport-Security: max-age=86400; includeSubDomains`
 
 **Recommended:** 
-- If the site owner would like their domain to be included in the [HSTS preload list](https://hstspreload.appspot.com/) maintained by Chrome (and used by Firefox and Safari), then use the header below. 
+- If the site owner would like their domain to be included in the [HSTS preload list](https://hstspreload.org) maintained by Chrome (and used by Firefox and Safari), then use the header below.
 - Sending the `preload` directive from your site can have **PERMANENT CONSEQUENCES** and prevent users from accessing your site and any of its subdomains if you find you need to switch back to HTTP. Please read the details at [preload removal](https://hstspreload.org/#removal) before sending the header with `preload`.
 
 `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`
@@ -45,26 +45,12 @@ Cookies can be manipulated from sub-domains, so omitting the `includeSubDomains`
 
 # Browser Support
 
-See the browsers support matrix [here](https://caniuse.com/#feat=stricttransportsecurity).
-
-There is also a [TLS Browser Test Page](https://badssl.com/) to check whether your current browser supports HSTS.
+As of September 2019 HSTS is supported by [all modern browsers](https://caniuse.com/#feat=stricttransportsecurity), with the only notable exception being Opera Mini.
 
 # References
 
-- [Chromium Projects/HSTS](http://dev.chromium.org/sts)
+- [Chromium Projects/HSTS](https://www.chromium.org/hsts/)
 - [OWASP TLS Protection Cheat Sheet](Transport_Layer_Protection_Cheat_Sheet.md)
 - [Moxie Marlinspike's Black Hat 2009 talk on sslstrip, that demonstrates why you need HSTS](https://moxie.org/software/sslstrip/)
 - [AppSecTutorial Series - Episode 4](https://www.youtube.com/watch?v=zEV3HOuM_Vw)
 - [Nmap NSE script to detect HSTS configuration](https://github.com/icarot/NSE_scripts/blob/master/http-hsts-verify.nse)
-
-# Authors and Primary Editors
-
-Til Maas
-
-Jim Manico
-
-Pawel Krawczyk
-
-Daniel Black
-
-Michael Coates
